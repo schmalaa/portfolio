@@ -1,26 +1,293 @@
-@import "tailwindcss";
-
+/* =========================================
+   Variables & Design Tokens
+   ========================================= */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color Palette - Dark mode specialized, high contrast */
+  --clr-bg-base: #0a0a0f;
+  --clr-bg-elevated: rgba(20, 20, 30, 0.6);
+  --clr-primary: #7c3aed;
+  /* Vibrant Purple */
+  --clr-primary-glow: rgba(124, 58, 237, 0.5);
+  --clr-secondary: #0ea5e9;
+  /* Electric Blue */
+  --clr-secondary-glow: rgba(14, 165, 233, 0.5);
+
+  --clr-text-main: #f8fafc;
+  --clr-text-muted: #94a3b8;
+  --clr-text-accent: #c4b5fd;
+
+  /* Layout */
+  --nav-height: 80px;
+  --section-max-width: 1100px;
+
+  /* Effects */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(20, 20, 35, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* =========================================
+   Resets & Base Styles
+   ========================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-height);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--clr-bg-base);
+  color: var(--clr-text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Custom Selection */
+::selection {
+  background-color: var(--clr-primary-glow);
+  color: white;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--clr-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clr-bg-elevated);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-primary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+ul {
+  list-style: none;
+}
+
+/* =========================================
+   Typography & Utilities
+   ========================================= */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  line-height: 1.1;
+  color: var(--clr-text-main);
+}
+
+.accent {
+  color: var(--clr-primary);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  font-size: clamp(26px, 5vw, 32px);
+  margin-bottom: 40px;
+  white-space: nowrap;
+}
+
+.section-heading::after {
+  content: "";
+  display: block;
+  position: relative;
+  height: 1px;
+  margin-left: 20px;
+  background: var(--clr-bg-elevated);
+  width: 100%;
+  max-width: 300px;
+}
+
+.heading-number {
+  color: var(--clr-primary);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-right: 10px;
+  position: relative;
+  bottom: -2px;
+}
+
+main.container {
+  padding: 0 24px;
+  max-width: var(--section-max-width);
+  margin: 0 auto;
+}
+
+.section-spacing {
+  padding: 100px 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Glassmorphism Utilities */
+.glass-effect,
+.glass-panel,
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-block;
+  padding: 1rem 1.75rem;
+  background: transparent;
+  color: var(--clr-primary);
+  border: 1px solid var(--clr-primary);
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: var(--transition-normal);
+  cursor: pointer;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--clr-primary);
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: bottom right;
+  transition: transform var(--transition-normal);
+}
+
+.btn-primary:hover {
+  color: white;
+}
+
+.btn-primary:hover::before {
+  transform: scaleY(1);
+  transform-origin: top left;
+}
+
+.btn-primary-small {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--clr-primary);
+  color: var(--clr-primary);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary-small:hover {
+  background: var(--clr-primary-glow);
+  color: white;
+}
+
+/* =========================================
+   Animations
+   ========================================= */
+@keyframes morph {
+  0% {
+    border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
+  }
+
+  34% {
+    border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+  }
+
+  67% {
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+  }
+
+  100% {
+    border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Scroll Reveal Classes */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal-up.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-fade {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.reveal-fade.active {
+  opacity: 1;
+}
+
+.delay-1 {
+  transition-delay: 0.1s;
+}
+
+.delay-2 {
+  transition-delay: 0.2s;
+}
+
+.delay-3 {
+  transition-delay: 0.3s;
+}
+
+.delay-4 {
+  transition-delay: 0.4s;
+}
+
+.delay-5 {
+  transition-delay: 0.5s;
 }
