@@ -236,9 +236,9 @@ export default function Home() {
             .hero-content { align-items: center; display: flex; flex-direction: column; }
             .hero-desc { text-align: center; }
             .about-content { grid-template-columns: 1fr; }
-            .project-card, .project-card.reverse { display: flex; flex-direction: column; }
+            .project-card, .project-card.reverse { display: flex; flex-direction: column; gap: 20px; }
             .project-content { padding: 30px 20px; text-align: left; }
-            .project-image { min-height: 250px; width: 100%; order: -1; margin-bottom: 20px; }
+            .project-image { min-height: 250px; height: 300px; width: 100%; order: -1; margin-bottom: 10px; flex-shrink: 0; }
             .project-card.reverse .project-tech-list { justify-content: flex-start; }
             .section-heading::after { display: none; }
         }
