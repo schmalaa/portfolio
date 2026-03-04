@@ -90,7 +90,7 @@ export default function Hero3DElement() {
                 <Environment preset="city" />
 
                 {/* Soft shadow underneath the objects */}
-                <ContactShadows position={[0, -2.5, 0]} opacity={0.5} scale={10} blur={2} far={4} color="#000000" />
+                {/* <ContactShadows position={[0, -2.5, 0]} opacity={0.5} scale={10} blur={2} far={4} color="#000000" /> */}
 
                 {/* Let users rotate the shape! */}
                 <OrbitControls
