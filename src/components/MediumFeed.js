@@ -11,20 +11,19 @@ export default function MediumFeed({ username = "schmalaa" }) {
     useEffect(() => {
         async function fetchArticles() {
             try {
-                // Use allorigins to bypass CORS and fetch the raw XML directly
-                // (rss2json caches aggressively on their free tier, missing new articles)
-                const rssUrl = `https://medium.com/feed/@${username}`;
-                const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+                // Use our internal Next.js API route to fetch the Medium RSS XML
+                // This bypasses entirely CORS blocks from external proxies like allorigins.win
+                const apiUrl = `/api/medium?username=${encodeURIComponent(username)}`;
 
                 const response = await fetch(apiUrl, { cache: "no-store" });
-                if (!response.ok) throw new Error("Failed to fetch Medium articles");
+                if (!response.ok) throw new Error("Failed to fetch Medium articles from API");
 
-                const data = await response.json();
+                const xmlString = await response.text();
 
-                if (data.contents) {
+                if (xmlString) {
                     // Manually parse the raw XML string into a DOM Document
                     const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
                     const items = Array.from(xmlDoc.querySelectorAll("item"));
 
