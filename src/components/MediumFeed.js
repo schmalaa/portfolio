@@ -73,7 +73,8 @@ export default function MediumFeed({ username = "schmalaa" }) {
     // It only dumps all images into the HTML body. 
     // This allows you to explicitly map an article's GUID (or URL) to a specific image URL.
     const thumbnailOverrides = {
-        "https://medium.com/p/ce2c5f7001a1": "https://cdn-images-1.medium.com/max/1024/1*nFIT-lP9bULTk-_p8VN_Ig.jpeg"
+        "https://medium.com/p/ce2c5f7001a1": "/leadrevival.jpg", // The Future of Web Development
+        "https://medium.com/p/99f5655a2ec5": "/leads-table.jpg"  // Don't Let Your Agents Go Rogue
     };
 
     // Function to extract the first image URL from the HTML content, with override support
@@ -89,7 +90,7 @@ export default function MediumFeed({ username = "schmalaa" }) {
         // 3. Fallback: parse the HTML body and extract the first valid image
         const htmlContent = item.content || item.description || "";
         // Match all images to potentially find highest res, but default to first valid cdn image
-        const matches = [...htmlContent.matchAll(/<img[^>]+src=["'](https:\/\/cdn-images[^"']+)["']/ig)];
+        const matches = [...htmlContent.matchAll(/<img[^>]+src=["'](https:\/\/cdn-images[^"']+|https:\/\/miro\.medium\.com[^"']+)["']/ig)];
 
         if (matches.length > 0) {
             // Return the first valid Medium CDN image found
