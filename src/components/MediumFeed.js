@@ -48,12 +48,34 @@ export default function MediumFeed({ username = "schmalaa" }) {
         return text.length > 120 ? text.substring(0, 120) + "..." : text;
     };
 
-    // Function to extract the first image URL from the HTML content
+    // Optional: Medium's RSS feed doesn't expose the "Featured Image" metadata.
+    // It only dumps all images into the HTML body. 
+    // This allows you to explicitly map an article's GUID (or URL) to a specific image URL.
+    const thumbnailOverrides = {
+        "https://medium.com/p/ce2c5f7001a1": "https://cdn-images-1.medium.com/max/1024/1*nFIT-lP9bULTk-_p8VN_Ig.jpeg"
+    };
+
+    // Function to extract the first image URL from the HTML content, with override support
     const extractImage = (item) => {
+        // 1. Check if we have an explicit override for this article
+        if (thumbnailOverrides[item.guid]) {
+            return thumbnailOverrides[item.guid];
+        }
+
+        // 2. Check if the API magically found a thumbnail
         if (item.thumbnail && item.thumbnail !== "") return item.thumbnail;
+
+        // 3. Fallback: parse the HTML body and extract the first valid image
         const htmlContent = item.content || item.description || "";
-        const match = htmlContent.match(/<img[^>]+src=["']([^"']+)["']/i);
-        return match ? match[1] : null;
+        // Match all images to potentially find highest res, but default to first valid cdn image
+        const matches = [...htmlContent.matchAll(/<img[^>]+src=["'](https:\/\/cdn-images[^"']+)["']/ig)];
+
+        if (matches.length > 0) {
+            // Return the first valid Medium CDN image found
+            return matches[0][1];
+        }
+
+        return null;
     };
 
     if (loading) {
