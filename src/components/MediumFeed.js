@@ -48,6 +48,14 @@ export default function MediumFeed({ username = "schmalaa" }) {
         return text.length > 120 ? text.substring(0, 120) + "..." : text;
     };
 
+    // Function to extract the first image URL from the HTML content
+    const extractImage = (item) => {
+        if (item.thumbnail && item.thumbnail !== "") return item.thumbnail;
+        const htmlContent = item.content || item.description || "";
+        const match = htmlContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+        return match ? match[1] : null;
+    };
+
     if (loading) {
         return (
             <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
@@ -63,49 +71,52 @@ export default function MediumFeed({ username = "schmalaa" }) {
             </div>
         );
     }
-
     return (
         <div className="medium-feed-grid">
-            {articles.map((article) => (
-                <a
-                    key={article.guid}
-                    href={article.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="medium-card glass-panel"
-                >
-                    {/* Thumbnail Image */}
-                    <div className="medium-thumbnail">
-                        {article.thumbnail ? (
-                            <Image
-                                src={article.thumbnail}
-                                alt={article.title}
-                                fill
-                                style={{ objectFit: 'cover' }}
-                            />
-                        ) : (
-                            <div style={{ width: '100%', height: '100%', background: 'var(--clr-bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span style={{ color: 'var(--clr-text-muted)' }}>Medium</span>
+            {articles.map((article) => {
+                const imageUrl = extractImage(article);
+                return (
+                    <a
+                        key={article.guid}
+                        href={article.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="medium-card glass-panel"
+                    >
+                        {/* Thumbnail Image */}
+                        <div className="medium-thumbnail">
+                            {imageUrl ? (
+                                <Image
+                                    src={imageUrl}
+                                    alt={article.title}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            ) : (
+                                <div style={{ width: '100%', height: '100%', background: 'var(--clr-bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <span style={{ color: 'var(--clr-text-muted)' }}>Medium</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Content Area */}
+                        <div className="medium-content">
+                            <div className="medium-date">
+                                {new Date(article.pubDate).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })}
                             </div>
-                        )}
-                    </div>
+                            <h4 className="medium-title">{article.title}</h4>
+                            <p className="medium-snippet">{extractSnippet(article.description)}</p>
 
-                    {/* Content Area */}
-                    <div className="medium-content">
-                        <div className="medium-date">
-                            {new Date(article.pubDate).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })}
+                            <div className="medium-tags">
+                                {article.categories.slice(0, 3).map(tag => (
+                                    <span key={tag} className="medium-tag">{tag}</span>
+                                ))}
+                            </div>
                         </div>
-                        <h4 className="medium-title">{article.title}</h4>
-                        <p className="medium-snippet">{extractSnippet(article.description)}</p>
-
-                        <div className="medium-tags">
-                            {article.categories.slice(0, 3).map(tag => (
-                                <span key={tag} className="medium-tag">{tag}</span>
-                            ))}
-                        </div>
-                    </div>
-                </a>
-            ))}
+                    </a>
+                )
+            })
+            }
 
             <style jsx>{`
                 .medium-feed-grid {
@@ -193,6 +204,6 @@ export default function MediumFeed({ username = "schmalaa" }) {
                     color: var(--clr-text-accent);
                 }
             `}</style>
-        </div>
+        </div >
     );
 }
