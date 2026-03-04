@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, OrbitControls, Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+import ErrorBoundary from "./ErrorBoundary";
 
 // A sleek, modern abstract 3D shape (Icosahedron)
 function AbstractShape({ isHovered }) {
@@ -76,32 +77,34 @@ export default function Hero3DElement() {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-                {/* Lighting setup */}
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[10, 10, 5]} intensity={1.5} color="#ffffff" />
-                <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#7c3aed" />
+            <ErrorBoundary fallback={<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: 'var(--clr-text-muted)', fontSize: '0.9rem' }}>Interactive 3D Abstract (WebGL required)</p></div>}>
+                <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+                    {/* Lighting setup */}
+                    <ambientLight intensity={0.5} />
+                    <directionalLight position={[10, 10, 5]} intensity={1.5} color="#ffffff" />
+                    <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#7c3aed" />
 
-                {/* 3D Objects */}
-                <AbstractShape isHovered={isHovered} />
-                <SecondaryShape />
+                    {/* 3D Objects */}
+                    <AbstractShape isHovered={isHovered} />
+                    <SecondaryShape />
 
-                {/* Environment reflections to make the physical material look premium/glassy */}
-                <Environment preset="city" />
+                    {/* Environment reflections to make the physical material look premium/glassy */}
+                    <Environment preset="city" />
 
-                {/* Soft shadow underneath the objects */}
-                {/* <ContactShadows position={[0, -2.5, 0]} opacity={0.5} scale={10} blur={2} far={4} color="#000000" /> */}
+                    {/* Soft shadow underneath the objects */}
+                    {/* <ContactShadows position={[0, -2.5, 0]} opacity={0.5} scale={10} blur={2} far={4} color="#000000" /> */}
 
-                {/* Let users rotate the shape! */}
-                <OrbitControls
-                    enableZoom={false}
-                    enablePan={false}
-                    autoRotate={!isHovered}
-                    autoRotateSpeed={0.5}
-                    maxPolarAngle={Math.PI / 2 + 0.2} // Prevent rotating totally underneath
-                    minPolarAngle={Math.PI / 2 - 0.5} // Prevent rotating totally on top
-                />
-            </Canvas>
+                    {/* Let users rotate the shape! */}
+                    <OrbitControls
+                        enableZoom={false}
+                        enablePan={false}
+                        autoRotate={!isHovered}
+                        autoRotateSpeed={0.5}
+                        maxPolarAngle={Math.PI / 2 + 0.2} // Prevent rotating totally underneath
+                        minPolarAngle={Math.PI / 2 - 0.5} // Prevent rotating totally on top
+                    />
+                </Canvas>
+            </ErrorBoundary>
         </div>
     );
 }

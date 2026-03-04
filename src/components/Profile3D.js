@@ -4,6 +4,7 @@ import { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import ErrorBoundary from "./ErrorBoundary";
 
 // Custom shader material for an RGB split/wave hover effect on a single image
 const transitionVertexShader = `
@@ -95,10 +96,12 @@ function ProfileMesh() {
 export default function Profile3D() {
     return (
         <div style={{ width: "100%", height: "400px", position: "relative" }}>
-            <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
-                <ambientLight intensity={1} />
-                <ProfileMesh />
-            </Canvas>
+            <ErrorBoundary fallback={<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--clr-bg-elevated)', borderRadius: '16px' }}><p style={{ color: 'var(--clr-text-muted)' }}>Profile Element (WebGL required)</p></div>}>
+                <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
+                    <ambientLight intensity={1} />
+                    <ProfileMesh />
+                </Canvas>
+            </ErrorBoundary>
         </div>
     );
 }

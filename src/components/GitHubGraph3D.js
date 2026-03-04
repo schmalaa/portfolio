@@ -4,6 +4,7 @@ import { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Float } from "@react-three/drei";
 import * as THREE from "three";
+import ErrorBoundary from "./ErrorBoundary";
 
 // Fetch contribution data from the open-source github-contributions-api
 async function fetchContributions(username) {
@@ -169,20 +170,22 @@ export default function GitHubGraph3D({ username = "schmalaa" }) {
             </div>
 
             {!loading && data && (
-                <Canvas camera={{ position: [0, 8, 12], fov: 45 }}>
-                    <ambientLight intensity={0.5} />
-                    <directionalLight position={[10, 10, 5]} intensity={1.5} />
-                    <pointLight position={[-10, -10, -10]} intensity={0.5} />
+                <ErrorBoundary fallback={<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: 'var(--clr-text-muted)' }}>3D Graph Unavailable (WebGL required)</p></div>}>
+                    <Canvas camera={{ position: [0, 8, 12], fov: 45 }}>
+                        <ambientLight intensity={0.5} />
+                        <directionalLight position={[10, 10, 5]} intensity={1.5} />
+                        <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
-                    <Graph data={data} />
+                        <Graph data={data} />
 
-                    <OrbitControls
-                        enableZoom={true}
-                        enablePan={false}
-                        minPolarAngle={0}
-                        maxPolarAngle={Math.PI / 2 - 0.1} // don't go below ground
-                    />
-                </Canvas>
+                        <OrbitControls
+                            enableZoom={true}
+                            enablePan={false}
+                            minPolarAngle={0}
+                            maxPolarAngle={Math.PI / 2 - 0.1} // don't go below ground
+                        />
+                    </Canvas>
+                </ErrorBoundary>
             )}
 
             {!loading && !data && (
