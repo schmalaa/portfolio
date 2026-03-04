@@ -141,6 +141,24 @@ export default function GitHubGraph3D({ username = "schmalaa" }) {
         load();
     }, [username]);
 
+    const stats = useMemo(() => {
+        if (!data || !data.contributions) return null;
+
+        const flat = data.contributions.flat();
+        // Total contributions over the past year
+        const total = flat.reduce((sum, day) => sum + day.contributionCount, 0);
+
+        // Last 30 days average
+        const last30 = flat.slice(-30);
+        const last30Total = last30.reduce((sum, day) => sum + day.contributionCount, 0);
+        const avgPerDay = (last30Total / 30).toFixed(1);
+
+        // Max contributions in a single day
+        const max = Math.max(...flat.map(d => d.contributionCount));
+
+        return { total, avgPerDay, max };
+    }, [data]);
+
     return (
         <div className="github-graph-container" style={{ width: "100%", height: "400px", position: "relative", borderRadius: "16px", overflow: "hidden", background: "rgba(10, 10, 15, 0.5)", border: "1px solid rgba(255,255,255,0.05)" }}>
 
@@ -170,6 +188,36 @@ export default function GitHubGraph3D({ username = "schmalaa" }) {
             {!loading && !data && (
                 <div style={{ display: "flex", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
                     <p style={{ color: "var(--clr-text-muted)" }}>Unable to load GitHub data.</p>
+                </div>
+            )}
+
+            {!loading && stats && (
+                <div style={{
+                    position: "absolute",
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    display: "flex",
+                    justifyContent: "space-around",
+                    background: "rgba(20, 20, 30, 0.6)",
+                    backdropFilter: "blur(8px)",
+                    borderRadius: "12px",
+                    padding: "15px",
+                    border: "1px solid rgba(255,255,255,0.05)",
+                    zIndex: 10
+                }}>
+                    <div style={{ textAlign: "center" }}>
+                        <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: "600", color: "var(--clr-text-main)" }}>{stats.total}</p>
+                        <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--clr-text-muted)" }}>Last Year</p>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: "600", color: "var(--clr-primary)" }}>{stats.avgPerDay}</p>
+                        <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--clr-text-muted)" }}>Daily Avg (30d)</p>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: "600", color: "var(--clr-secondary)" }}>{stats.max}</p>
+                        <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--clr-text-muted)" }}>Best Day</p>
+                    </div>
                 </div>
             )}
         </div>
