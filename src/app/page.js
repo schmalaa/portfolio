@@ -6,6 +6,7 @@ import Hero3DElement from "@/components/Hero3DElement";
 import Profile3D from "@/components/Profile3D";
 import ProjectSlider from "@/components/ProjectSlider";
 import GitHubGraph3D from "@/components/GitHubGraph3D";
+import MediumFeed from "@/components/MediumFeed";
 
 function RevealWrapper({ children, animation = "reveal-up", delay = "", className = "", style = {} }) {
   const ref = useRef(null);
@@ -119,6 +120,16 @@ export default function Home() {
         <div style={{ marginTop: "60px" }}>
           <RevealWrapper delay="delay-4">
             <GitHubGraph3D username="schmalaa" />
+          </RevealWrapper>
+        </div>
+
+        {/* Medium Articles Section */}
+        <div style={{ marginTop: "60px" }}>
+          <RevealWrapper delay="delay-5">
+            <h3 style={{ fontSize: "1.5rem", marginBottom: "20px", color: "var(--clr-text-main)", position: "relative", display: "inline-block" }}>
+              Latest Insights
+            </h3>
+            <MediumFeed username="schmalaa" />
           </RevealWrapper>
         </div>
       </section>
