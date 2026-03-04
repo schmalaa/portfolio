@@ -11,23 +11,45 @@ export default function MediumFeed({ username = "schmalaa" }) {
     useEffect(() => {
         async function fetchArticles() {
             try {
-                // Use rss2json to convert Medium's XML RSS feed into JSON
+                // Use allorigins to bypass CORS and fetch the raw XML directly
+                // (rss2json caches aggressively on their free tier, missing new articles)
                 const rssUrl = `https://medium.com/feed/@${username}`;
-                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+                const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
 
-                const response = await fetch(apiUrl);
+                const response = await fetch(apiUrl, { cache: "no-store" });
                 if (!response.ok) throw new Error("Failed to fetch Medium articles");
 
                 const data = await response.json();
 
-                if (data.status === "ok") {
-                    // Filter out comments/replies (Medium RSS sometimes includes them)
-                    // Usually full articles have categories (tags)
-                    const posts = data.items.filter(item => item.categories && item.categories.length > 0);
+                if (data.contents) {
+                    // Manually parse the raw XML string into a DOM Document
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+
+                    const items = Array.from(xmlDoc.querySelectorAll("item"));
+
+                    const parsedPosts = items.map(item => {
+                        const title = item.querySelector("title")?.textContent || "";
+                        const link = item.querySelector("link")?.textContent || "";
+                        const pubDate = item.querySelector("pubDate")?.textContent || "";
+                        const guid = item.querySelector("guid")?.textContent || "";
+                        // Content can be in <content:encoded> or <description>
+                        const content = item.querySelector("content\\:encoded")?.textContent || item.querySelector("description")?.textContent || "";
+                        const description = item.querySelector("description")?.textContent || "";
+
+                        // Extract categories
+                        const categoryNodes = item.querySelectorAll("category");
+                        const categories = Array.from(categoryNodes).map(node => node.textContent);
+
+                        return { title, link, pubDate, guid, content, description, categories };
+                    });
+
+                    // Filter out comments/replies (usually lack categories)
+                    const posts = parsedPosts.filter(item => item.categories && item.categories.length > 0);
                     // Take the latest 3
                     setArticles(posts.slice(0, 3));
                 } else {
-                    throw new Error(data.message || "Failed to parse RSS feed");
+                    throw new Error("Failed to parse RSS feed xml");
                 }
             } catch (err) {
                 console.error("Error fetching Medium feed:", err);
