@@ -74,7 +74,7 @@ export default function MediumFeed({ username = "schmalaa" }) {
     // This allows you to explicitly map an article's GUID (or URL) to a specific image URL.
     const thumbnailOverrides = {
         "https://medium.com/p/ce2c5f7001a1": "/leadrevival.jpg", // The Future of Web Development
-        "https://medium.com/p/99f5655a2ec5": "/leads-table.jpg"  // Don't Let Your Agents Go Rogue
+        "https://medium.com/p/99f5655a2ec5": "/ai-planning.jpg"  // Don't Let Your Agents Go Rogue
     };
 
     // Function to extract the first image URL from the HTML content, with override support
