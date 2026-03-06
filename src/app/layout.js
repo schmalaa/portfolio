@@ -8,8 +8,21 @@ const bodyFont = Plus_Jakarta_Sans({ subsets: ["latin"], variable: '--font-body'
 const headingFont = Space_Grotesk({ subsets: ["latin"], weight: ['400', '600', '700'], variable: '--font-heading', display: 'swap' });
 
 export const metadata = {
-  title: "Alex | Web Developer Portfolio",
-  description: "Portfolio of Alex, a passionate Web Developer showcasing modern, responsive, and dynamic web applications.",
+  title: "Alex Schmaltz | Web Developer & Software Engineer Portfolio",
+  description: "Portfolio of Alex Schmaltz, a passionate Web Developer and Software Engineer showcasing modern, responsive, and dynamic web applications.",
+  keywords: ["Alex Schmaltz", "Web Developer", "Software Engineer", "Frontend Developer", "Full Stack Developer", "Portfolio", "React", "Next.js"],
+  openGraph: {
+    title: "Alex Schmaltz | Web Developer Portfolio",
+    description: "Portfolio of Alex Schmaltz, a passionate Web Developer and Software Engineer.",
+    url: "https://alexschmaltz.com",
+    siteName: "Alex Schmaltz Portfolio",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    title: "Alex Schmaltz | Web Developer Portfolio",
+    card: "summary_large_image",
+  }
 };
 
 export default function RootLayout({ children }) {

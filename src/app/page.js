@@ -29,11 +29,11 @@ export default function Home() {
       <section id="home" className="hero section-spacing">
         <div className="hero-content">
           <RevealWrapper><p className="greeting">Hi, my name is</p></RevealWrapper>
-          <RevealWrapper delay="delay-1"><h1 className="hero-title">Alex.</h1></RevealWrapper>
+          <RevealWrapper delay="delay-1"><h1 className="hero-title">Alex Schmaltz.</h1></RevealWrapper>
           <RevealWrapper delay="delay-2"><h1 className="hero-subtitle">I build things.</h1></RevealWrapper>
           <RevealWrapper delay="delay-3">
             <p className="hero-desc">
-              I'm a software engineer specializing in building (and occasionally designing) exceptional digital experiences. Currently, I'm focused on building accessible, human-centered products.
+              I'm a software engineer and web developer specializing in building (and occasionally designing) exceptional digital experiences. Currently, I'm focused on building accessible, human-centered products.
             </p>
           </RevealWrapper>
           <RevealWrapper delay="delay-4">
@@ -63,7 +63,7 @@ export default function Home() {
         <div className="about-content">
           <RevealWrapper delay="delay-1">
             <div className="about-text glass-panel">
-              <p>Hello! I'm Alex, a passionate web developer with a keen eye for modern design and robust architecture.</p>
+              <p>Hello! I'm Alex Schmaltz, a passionate web developer with a keen eye for modern design and robust architecture.</p>
               <p>My journey in web development started back when I found dreamweaver installed on a school computer, which taught me a lot about HTML & CSS (the wrong way)!</p>
               <p>Fast-forward to today, and I've had the privilege of working on varying projects, focusing on delivering high-quality, impactful solutions. I thrive in environments where I can combine my technical skills with creative problem-solving.</p>
             </div>
