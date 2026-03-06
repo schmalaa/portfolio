@@ -5,81 +5,86 @@ import StatusHeader from '../../components/vercel/StatusHeader';
 import ProjectStatusCard from '../../components/vercel/ProjectStatusCard';
 
 export default function StatusPage() {
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        async function fetchVercelStatus() {
-            try {
-                const response = await fetch('/api/vercel');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch status data');
-                }
-                const data = await response.json();
-                setProjects(data.projects || []);
-            } catch (err) {
-                console.error('Error fetching Vercel status:', err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
+  useEffect(() => {
+    async function fetchVercelStatus() {
+      try {
+        const response = await fetch('/api/vercel');
+        if (!response.ok) {
+          let errorMessage = 'Failed to fetch status data';
+          try {
+            const errorData = await response.json();
+            if (errorData.error) errorMessage = errorData.error;
+          } catch (e) { } // Ignore JSON parse errors for non-JSON responses
+          throw new Error(errorMessage);
         }
+        const data = await response.json();
+        setProjects(data.projects || []);
+      } catch (err) {
+        console.error('Error fetching Vercel status:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-        fetchVercelStatus();
+    fetchVercelStatus();
 
-        // Refresh every minute
-        const interval = setInterval(fetchVercelStatus, 60000);
-        return () => clearInterval(interval);
-    }, []);
+    // Refresh every minute
+    const interval = setInterval(fetchVercelStatus, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
-    return (
-        <div className="status-page-container">
-            <div className="content-wrapper">
-                {loading ? (
-                    <div className="loading-state">
-                        <div className="spinner-container">
-                            <div className="spinner outer"></div>
-                            <div className="spinner inner"></div>
-                        </div>
-                        <h2 className="loading-text">Synthesizing Status...</h2>
-                    </div>
-                ) : error ? (
-                    <div className="error-state">
-                        <div className="error-icon-container">
-                            <svg className="error-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        </div>
-                        <h2 className="error-title">Connection Interrupted</h2>
-                        <p className="error-desc">Unable to establish secure connection to Vercel telemetry. Please verify your token configuration.</p>
-                        <p className="error-message">{error}</p>
-                    </div>
-                ) : (
-                    <div className="reveal-fade active">
-                        <StatusHeader projects={projects} />
+  return (
+    <div className="status-page-container">
+      <div className="content-wrapper">
+        {loading ? (
+          <div className="loading-state">
+            <div className="spinner-container">
+              <div className="spinner outer"></div>
+              <div className="spinner inner"></div>
+            </div>
+            <h2 className="loading-text">Synthesizing Status...</h2>
+          </div>
+        ) : error ? (
+          <div className="error-state">
+            <div className="error-icon-container">
+              <svg className="error-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="error-title">Connection Interrupted</h2>
+            <p className="error-desc">Unable to establish secure connection to Vercel telemetry. Please verify your token configuration.</p>
+            <p className="error-message">{error}</p>
+          </div>
+        ) : (
+          <div className="reveal-fade active">
+            <StatusHeader projects={projects} />
 
-                        <div className="projects-grid">
-                            {projects.map((project, index) => (
-                                <div key={project.id} className="reveal-up active" style={{ animationDelay: `${index * 0.1}s` }}>
-                                    <ProjectStatusCard project={project} />
-                                </div>
-                            ))}
-                        </div>
-
-                        {projects.length === 0 && (
-                            <div className="empty-state glass-panel">
-                                <p>No active streams detected. Deploy a project to Vercel to monitor its status here.</p>
-                            </div>
-                        )}
-                    </div>
-                )}
+            <div className="projects-grid">
+              {projects.map((project, index) => (
+                <div key={project.id} className="reveal-up active" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <ProjectStatusCard project={project} />
+                </div>
+              ))}
             </div>
 
-            {/* Dynamic gradient overlay at bottom for depth */}
-            <div className="bottom-gradient" />
+            {projects.length === 0 && (
+              <div className="empty-state glass-panel">
+                <p>No active streams detected. Deploy a project to Vercel to monitor its status here.</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
-            <style jsx>{`
+      {/* Dynamic gradient overlay at bottom for depth */}
+      <div className="bottom-gradient" />
+
+      <style jsx>{`
         .status-page-container {
           position: relative;
           min-height: 100vh;
@@ -231,6 +236,6 @@ export default function StatusPage() {
           50% { opacity: .5; }
         }
       `}</style>
-        </div >
-    );
+    </div >
+  );
 }

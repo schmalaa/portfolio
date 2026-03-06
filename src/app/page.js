@@ -146,6 +146,12 @@ export default function Home() {
                 <div className="project-description">
                   <p>A full-stack SaaS platform for reviving stale leads for businesses. Utilizes AI to analyze and re-engage leads, increasing conversion rates.</p>
                 </div>
+                <div className="project-links" style={{ marginBottom: "20px" }}>
+                  <a href="https://getleadrevival.ai" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
+                    <span>Visit Site</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                </div>
                 <ul className="project-tech-list">
                   <li>Next.js</li><li>Node.js</li><li>Stripe</li><li>PostgreSQL</li>
                 </ul>
@@ -169,6 +175,12 @@ export default function Home() {
                 <div className="project-description">
                   <p>A comprehensive design system for Nationwide Insurance, providing a consistent and accessible visual language for all digital products.</p>
                 </div>
+                <div className="project-links" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
+                  <a href="https://bolt.nationwide.com" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
+                    <span>Visit Site</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                </div>
                 <ul className="project-tech-list">
                   <li>TypeScript</li><li>SASS</li><li>Storybook</li><li>Figma</li>
                 </ul>
@@ -177,6 +189,37 @@ export default function Home() {
                 <ProjectSlider images={[
                   "/bolt-home.jpg",
                   "/bolt-button.jpg"
+                ]} />
+              </div>
+            </article>
+          </RevealWrapper>
+
+          <RevealWrapper delay="delay-3">
+            <article className="project-card">
+              <div className="project-content glass-panel">
+                <p className="project-overline">Featured Project</p>
+                <h3 className="project-title">
+                  <a href="https://github.com/schmalaa/codebase-architect" target="_blank" rel="noopener noreferrer" style={{ color: "var(--clr-text-main)", textDecoration: "none" }}>
+                    Codebase Architect
+                  </a>
+                </h3>
+                <div className="project-description">
+                  <p>A Next.js application that visualizes GitHub repositories with React Flow and explains code files using an AI agent.</p>
+                </div>
+                <div className="project-links" style={{ marginBottom: "20px" }}>
+                  <a href="https://codebase-architect.vercel.app/" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
+                    <span>Visit Site</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                </div>
+                <ul className="project-tech-list">
+                  <li>Next.js</li><li>React Flow</li><li>AI SDK</li><li>GitHub API</li><li>Open Source</li>
+                </ul>
+              </div>
+              <div className="project-image glass-panel" style={{ padding: 0 }}>
+                <ProjectSlider images={[
+                  "/homepage.jpg",
+                  "/agent-answer.jpg"
                 ]} />
               </div>
             </article>
@@ -234,6 +277,9 @@ export default function Home() {
         .project-overline { color: var(--clr-primary); font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
         .project-title { font-size: clamp(24px, 4vw, 32px); margin-bottom: 20px; }
         .project-description { background: rgba(10, 10, 15, 0.7); padding: 25px; border-radius: 8px; color: var(--clr-text-muted); font-size: 1.05rem; margin-bottom: 20px; box-shadow: 0 10px 30px -15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
+        .project-link:hover { color: var(--clr-secondary) !important; text-decoration: underline !important; }
+        .project-link svg { transition: transform 0.2s ease; }
+        .project-link:hover svg { transform: translate(2px, -2px); }
         .project-tech-list { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; font-family: var(--font-heading); font-size: 0.9rem; color: var(--clr-text-accent); }
 
         /* Contact */

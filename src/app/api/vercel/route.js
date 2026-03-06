@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request) {
     const token = process.env.VERCEL_TOKEN;
     const teamId = process.env.VERCEL_TEAM_ID; // Optional team ID
 
