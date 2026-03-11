@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Socials from "@/components/Socials";
 import DynamicBackgroundWrapper from "@/components/DynamicBackgroundWrapper";
+import { Analytics } from "@vercel/analytics/next";
 
 const bodyFont = Plus_Jakarta_Sans({ subsets: ["latin"], variable: '--font-body', display: 'swap' });
 const headingFont = Space_Grotesk({ subsets: ["latin"], weight: ['400', '600', '700'], variable: '--font-heading', display: 'swap' });
@@ -44,6 +45,7 @@ export default function RootLayout({ children }) {
         <footer className="site-footer" style={{ padding: '40px 0', textAlign: 'center', color: 'var(--clr-text-muted)', fontSize: '0.9rem', fontFamily: 'var(--font-heading)' }}>
           <p>Built with <span style={{ color: '#e25555' }}>&hearts;</span> by Alex</p>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
