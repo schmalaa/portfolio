@@ -89,7 +89,7 @@ export default function ProjectStatusCard({ project }) {
 
                         {deployment.url && (
                             <a
-                                href={`https://${deployment.url}`}
+                                href={`https://${project.customDomain || deployment.url}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="visit-btn"

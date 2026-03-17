@@ -51,8 +51,12 @@ export async function GET(request) {
                     const depData = await depRes.json();
                     const latestDeployment = depData.deployments?.[0] || null;
 
+                    const aliases = project.targets?.production?.alias || [];
+                    const customDomain = aliases.find(a => !a.endsWith('.vercel.app')) || aliases[0] || null;
+
                     return {
                         ...project,
+                        customDomain,
                         latestDeployment: latestDeployment ? {
                             id: latestDeployment.uid,
                             state: latestDeployment.state,
