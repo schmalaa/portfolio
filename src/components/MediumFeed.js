@@ -33,14 +33,18 @@ export default function MediumFeed({ username = "schmalaa" }) {
                         const pubDate = item.querySelector("pubDate")?.textContent || "";
                         const guid = item.querySelector("guid")?.textContent || "";
                         // Content can be in <content:encoded> or <description>
-                        const content = item.querySelector("content\\:encoded")?.textContent || item.querySelector("description")?.textContent || "";
+                        const contentNode = item.getElementsByTagName("content:encoded")[0] || item.querySelector("content\\:encoded");
+                        const content = contentNode?.textContent || item.querySelector("description")?.textContent || "";
                         const description = item.querySelector("description")?.textContent || "";
 
                         // Extract categories
                         const categoryNodes = item.querySelectorAll("category");
                         const categories = Array.from(categoryNodes).map(node => node.textContent);
 
-                        return { title, link, pubDate, guid, content, description, categories };
+                        // Save the raw innerHTML in case we need it for fallback regex scraping
+                        const innerHTML = item.innerHTML || "";
+
+                        return { title, link, pubDate, guid, content, description, categories, innerHTML };
                     });
 
                     // Filter out comments/replies (usually lack categories)
@@ -88,7 +92,7 @@ export default function MediumFeed({ username = "schmalaa" }) {
         if (item.thumbnail && item.thumbnail !== "") return item.thumbnail;
 
         // 3. Fallback: parse the HTML body and extract the first valid image
-        const htmlContent = item.content || item.description || "";
+        const htmlContent = item.content || item.description || item.innerHTML || "";
         // Match all images to potentially find highest res, but default to first valid cdn image
         const matches = [...htmlContent.matchAll(/<img[^>]+src=["'](https:\/\/cdn-images[^"']+|https:\/\/miro\.medium\.com[^"']+)["']/ig)];
 
