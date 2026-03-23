@@ -85,8 +85,18 @@ function Graph({ data }) {
         // Sort by date ascending (oldest to newest)
         flatContributions.sort((a, b) => new Date(a.date) - new Date(b.date));
 
+        // Get local YYYY-MM-DD
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+
+        // Filter out future dates that the API sometimes adds due to UTC/timezone differences
+        const validContributions = flatContributions.filter(d => d.date <= todayStr);
+
         // Take the last 60 items
-        const recent = flatContributions.slice(-60);
+        const recent = validContributions.slice(-60);
 
         const items = [];
         const cols = 10; // Wrap every 10 days
