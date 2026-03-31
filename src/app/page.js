@@ -235,7 +235,7 @@ export default function Home() {
                   </a>
                 </h3>
                 <div className="project-description">
-                  <p>A high-stakes, balanced rogue-lite survival engine port to the web. Features exponential enemy scaling, a dynamic boss spawn system, and unique hero attacks.</p>
+                  <p>A high-stakes, balanced rogue-lite survival game. Features exponential enemy scaling, a dynamic boss spawn system, and unique hero attacks. This is an ongoing project!</p>
                 </div>
                 <div className="project-links" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
                   <a href="https://www.synapse-snake.com/" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
@@ -251,7 +251,7 @@ export default function Home() {
                 <ProjectSlider images={[
                   "/synapse-snake-new-1.png",
                   "/synapse-snake-new-2.png",
-                  "/synapse-snake-video.mp4"
+                  "/gameplay.mp4"
                 ]} />
               </div>
             </article>
