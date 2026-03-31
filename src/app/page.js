@@ -249,8 +249,9 @@ export default function Home() {
               </div>
               <div className="project-image glass-panel" style={{ padding: 0 }}>
                 <ProjectSlider images={[
-                  "/synapse-snake-1.png",
-                  "/synapse-snake-2.webp"
+                  "/synapse-snake-new-1.png",
+                  "/synapse-snake-new-2.png",
+                  "/synapse-snake-video.mp4"
                 ]} />
               </div>
             </article>

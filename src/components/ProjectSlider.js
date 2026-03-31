@@ -35,17 +35,32 @@ export default function ProjectSlider({ images }) {
                     transform: `translateX(-${currentIndex * 100}%)`
                 }}
             >
-                {images.map((imgSrc, index) => (
-                    <div key={index} style={{ minWidth: '100%', position: 'relative', height: '100%' }}>
-                        <Image
-                            src={imgSrc}
-                            alt={`Project screenshot ${index + 1}`}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className="project-img-inner"
-                        />
-                    </div>
-                ))}
+                {images.map((imgSrc, index) => {
+                    const isVideo = imgSrc.endsWith('.mp4') || imgSrc.endsWith('.webm');
+                    return (
+                        <div key={index} style={{ minWidth: '100%', position: 'relative', height: '100%' }}>
+                            {isVideo ? (
+                                <video
+                                    src={imgSrc}
+                                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                    className="project-img-inner"
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                />
+                            ) : (
+                                <Image
+                                    src={imgSrc}
+                                    alt={`Project screenshot ${index + 1}`}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    className="project-img-inner"
+                                />
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
