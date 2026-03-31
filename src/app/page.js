@@ -5,7 +5,7 @@ import Image from "next/image";
 import Hero3DElement from "@/components/Hero3DElement";
 import Profile3D from "@/components/Profile3D";
 import ProjectSlider from "@/components/ProjectSlider";
-import GitHubGraph3D from "@/components/GitHubGraph3D";
+import GitHubMetrics from "@/components/GitHubMetrics";
 import MediumFeed from "@/components/MediumFeed";
 
 function RevealWrapper({ children, animation = "reveal-up", delay = "", className = "", style = {} }) {
@@ -33,7 +33,7 @@ export default function Home() {
           <RevealWrapper delay="delay-2"><h1 className="hero-subtitle">I build things.</h1></RevealWrapper>
           <RevealWrapper delay="delay-3">
             <p className="hero-desc">
-              I'm a software engineer and web developer specializing in building (and occasionally designing) exceptional digital experiences. Currently, I'm focused on building accessible, human-centered products.
+              I&apos;m a software engineer and web developer specializing in building (and occasionally designing) exceptional digital experiences. Currently, I&apos;m focused on building accessible, human-centered products.
             </p>
           </RevealWrapper>
           <RevealWrapper delay="delay-4">
@@ -63,9 +63,9 @@ export default function Home() {
         <div className="about-content">
           <RevealWrapper delay="delay-1">
             <div className="about-text glass-panel">
-              <p>Hello! I'm Alex Schmaltz, a passionate web developer with a keen eye for modern design and robust architecture.</p>
+              <p>Hello! I&apos;m Alex Schmaltz, a passionate web developer with a keen eye for modern design and robust architecture.</p>
               <p>My journey in web development started back when I found dreamweaver installed on a school computer, which taught me a lot about HTML & CSS (the wrong way)!</p>
-              <p>Fast-forward to today, and I've had the privilege of working on varying projects, focusing on delivering high-quality, impactful solutions. I thrive in environments where I can combine my technical skills with creative problem-solving.</p>
+              <p>Fast-forward to today, and I&apos;ve had the privilege of working on varying projects, focusing on delivering high-quality, impactful solutions. I thrive in environments where I can combine my technical skills with creative problem-solving.</p>
             </div>
           </RevealWrapper>
           <RevealWrapper delay="delay-2">
@@ -119,7 +119,7 @@ export default function Home() {
 
         <div style={{ marginTop: "60px" }}>
           <RevealWrapper delay="delay-4">
-            <GitHubGraph3D username="schmalaa" />
+            <GitHubMetrics username="schmalaa" />
           </RevealWrapper>
         </div>
 
@@ -224,15 +224,46 @@ export default function Home() {
               </div>
             </article>
           </RevealWrapper>
+
+          <RevealWrapper delay="delay-4">
+            <article className="project-card reverse">
+              <div className="project-content glass-panel">
+                <p className="project-overline">Featured Project</p>
+                <h3 className="project-title">
+                  <a href="https://www.synapse-snake.com/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--clr-text-main)", textDecoration: "none" }}>
+                    Synapse Snake
+                  </a>
+                </h3>
+                <div className="project-description">
+                  <p>A high-stakes, balanced rogue-lite survival engine port to the web. Features exponential enemy scaling, a dynamic boss spawn system, and unique hero attacks.</p>
+                </div>
+                <div className="project-links" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
+                  <a href="https://www.synapse-snake.com/" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
+                    <span>Visit Site</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                </div>
+                <ul className="project-tech-list">
+                  <li>React</li><li>Vite</li><li>Web Audio API</li><li>Canvas</li>
+                </ul>
+              </div>
+              <div className="project-image glass-panel" style={{ padding: 0 }}>
+                <ProjectSlider images={[
+                  "/synapse-snake-1.png",
+                  "/synapse-snake-2.webp"
+                ]} />
+              </div>
+            </article>
+          </RevealWrapper>
         </div>
       </section>
 
       <RevealWrapper>
         <section id="contact" className="contact section-spacing">
-          <h2 className="section-heading" style={{ justifyContent: 'center' }}><span className="heading-number">04.</span> What's Next?</h2>
+          <h2 className="section-heading" style={{ justifyContent: 'center' }}><span className="heading-number">04.</span> What&apos;s Next?</h2>
           <h2 className="contact-title">Get In Touch</h2>
           <p className="contact-text">
-            Although I'm not currently looking for any new opportunities, my inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+            Although I&apos;m not currently looking for any new opportunities, my inbox is always open. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
           </p>
           <a href="mailto:hello@example.com" className="btn-primary contact-btn">Say Hello</a>
         </section>
