@@ -21,6 +21,13 @@ export default function Navbar() {
         <Link href="/" className="logo">
           Alex<span className="accent">.Schmaltz</span>
         </Link>
+        <button 
+          className="cmd-k-badge" 
+          onClick={() => document.dispatchEvent(new CustomEvent('cmdk', { detail: { action: 'open-cmd-k' } }))}
+          aria-label="Open command palette"
+        >
+          <span className="cmd-icon">⌘</span>K
+        </button>
         <ul
           className="nav-links"
           style={{ display: menuOpen ? "flex" : "", flexDirection: menuOpen ? "column" : "" }}
@@ -72,6 +79,28 @@ export default function Navbar() {
           font-weight: 800;
           font-size: 1.5rem;
           letter-spacing: -0.5px;
+        }
+        .cmd-k-badge {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          color: var(--clr-text-muted);
+          padding: 4px 10px;
+          border-radius: 6px;
+          font-family: var(--font-body);
+          font-size: 0.85rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition-normal);
+          margin-left: 20px;
+          margin-right: auto;
+        }
+        .cmd-k-badge:hover {
+          background: rgba(255,255,255,0.1);
+          color: var(--clr-text-main);
+          border-color: rgba(255,255,255,0.2);
         }
         .nav-links {
           display: flex;

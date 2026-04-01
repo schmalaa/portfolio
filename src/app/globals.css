@@ -295,3 +295,105 @@ main.container {
 .delay-5 {
   transition-delay: 0.5s;
 }
+
+/* =========================================
+   Command Palette (CMDK)
+   ========================================= */
+.cmdk-dialog-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 15vh;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cmdk-dialog {
+  background: var(--clr-bg-base);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 70px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  font-family: var(--font-body);
+  animation: slideUp 0.15s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cmdk-dialog [cmdk-input] {
+  width: 100%;
+  padding: 20px;
+  font-size: 1.1rem;
+  background: transparent;
+  color: var(--clr-text-main);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  outline: none;
+  font-family: inherit;
+}
+
+.cmdk-dialog [cmdk-input]::placeholder {
+  color: var(--clr-text-muted);
+}
+
+.cmdk-dialog [cmdk-list] {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.cmdk-dialog [cmdk-empty] {
+  padding: 30px;
+  text-align: center;
+  color: var(--clr-text-muted);
+  font-size: 0.95rem;
+}
+
+.cmdk-dialog [cmdk-group-heading] {
+  padding: 10px 15px 5px;
+  font-size: 0.8rem;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.cmdk-dialog [cmdk-item] {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--clr-text-main);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: var(--transition-fast);
+  margin-bottom: 2px;
+}
+
+.cmdk-dialog [cmdk-item][aria-selected="true"] {
+  background: var(--clr-bg-elevated);
+  color: var(--clr-primary);
+}
+
+.cmdk-dialog [cmdk-item] svg {
+  color: var(--clr-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.cmdk-dialog [cmdk-item][aria-selected="true"] svg {
+  color: var(--clr-primary);
+}

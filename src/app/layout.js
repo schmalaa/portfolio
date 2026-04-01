@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Socials from "@/components/Socials";
 import DynamicBackgroundWrapper from "@/components/DynamicBackgroundWrapper";
 import { Analytics } from "@vercel/analytics/react";
+import SmoothScroll from "@/components/SmoothScroll";
+import CommandMenu from "@/components/CommandMenu";
 
 const bodyFont = Plus_Jakarta_Sans({ subsets: ["latin"], variable: '--font-body', display: 'swap' });
 const headingFont = Space_Grotesk({ subsets: ["latin"], weight: ['400', '600', '700'], variable: '--font-heading', display: 'swap' });
@@ -43,6 +45,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${bodyFont.variable} ${headingFont.variable}`}>
       <body>
+        <SmoothScroll>
         <DynamicBackgroundWrapper />
         <div id="particles-background" style={{
           position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
@@ -58,6 +61,7 @@ export default function RootLayout({ children }) {
         <footer className="site-footer" style={{ padding: '40px 0', textAlign: 'center', color: 'var(--clr-text-muted)', fontSize: '0.9rem', fontFamily: 'var(--font-heading)' }}>
           <p>Built with <span style={{ color: '#e25555' }}>&hearts;</span> by Alex</p>
         </footer>
+        <CommandMenu />
         <Analytics />
         <script
           type="application/ld+json"
@@ -76,6 +80,7 @@ export default function RootLayout({ children }) {
             })
           }}
         />
+        </SmoothScroll>
       </body>
     </html>
   );
