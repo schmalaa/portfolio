@@ -106,152 +106,103 @@ export default function MediumFeed({ username = "schmalaa" }) {
 
     if (loading) {
         return (
-            <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
-                <p style={{ color: "var(--clr-primary)" }}>Loading Medium articles...</p>
+            <div style={{ padding: "8px", fontFamily: "'Tahoma','Arial',sans-serif", fontSize: 11, display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 16, height: 16, border: "2px solid #000080", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} aria-label="Loading" />
+                Loading Medium articles...
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
     }
 
     if (error || articles.length === 0) {
         return (
-            <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
-                <p style={{ color: "var(--clr-text-muted)" }}>No articles found or unable to load feed.</p>
+            <div style={{ padding: "8px", fontFamily: "'Tahoma','Arial',sans-serif", fontSize: 11, color: "#444" }}>
+                No articles found or unable to load feed.
             </div>
         );
     }
     return (
-        <div className="medium-feed-grid">
-            {articles.map((article) => {
+        <div className="medium-feed-list">
+            {articles.map((article, idx) => {
                 const imageUrl = extractImage(article);
                 return (
-                    <a
-                        key={article.guid}
-                        href={article.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="medium-card glass-panel"
-                    >
-                        {/* Thumbnail Image */}
-                        <div className="medium-thumbnail">
-                            {imageUrl ? (
-                                <Image
-                                    src={imageUrl}
-                                    alt={article.title}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            ) : (
-                                <div style={{ width: '100%', height: '100%', background: 'var(--clr-bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <span style={{ color: 'var(--clr-text-muted)' }}>Medium</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Content Area */}
-                        <div className="medium-content">
-                            <div className="medium-date">
-                                {new Date(article.pubDate).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })}
-                            </div>
-                            <h4 className="medium-title">{article.title}</h4>
-                            <p className="medium-snippet">{extractSnippet(article.description)}</p>
-
-                            <div className="medium-tags">
+                    <div key={article.guid} className="medium-row win-listview-row">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ flexShrink: 0, color: "#000080" }}>
+                            <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+                        </svg>
+                        <div className="medium-row-content">
+                            <a
+                                href={article.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="medium-row-title"
+                            >
+                                {article.title}
+                            </a>
+                            <span className="medium-row-date">
+                                {new Date(article.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                            </span>
+                            <span className="medium-row-tags">
                                 {article.categories.slice(0, 3).map(tag => (
-                                    <span key={tag} className="medium-tag">{tag}</span>
+                                    <span key={tag} className="medium-row-tag">{tag}</span>
                                 ))}
-                            </div>
+                            </span>
                         </div>
-                    </a>
-                )
-            })
-            }
+                    </div>
+                );
+            })}
 
             <style jsx>{`
-                .medium-feed-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                    gap: 30px;
+                .medium-feed-list {
+                    background: #ffffff;
+                    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #404040;
                     width: 100%;
                 }
-
-                .medium-card {
+                .medium-row {
                     display: flex;
-                    flex-direction: column;
-                    border-radius: 12px;
-                    overflow: hidden;
-                    text-decoration: none;
-                    color: inherit;
-                    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-                    height: 100%;
-                }
-
-                .medium-card:hover {
-                    transform: translateY(-8px);
-                    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.05);
-                }
-
-                .medium-thumbnail {
-                    position: relative;
-                    width: 100%;
-                    height: 180px;
-                    overflow: hidden;
-                    border-bottom: 1px solid rgba(255,255,255,0.05);
-                }
-
-                .medium-content {
-                    padding: 20px;
-                    display: flex;
-                    flex-direction: column;
-                    flex-grow: 1;
-                }
-
-                .medium-date {
-                    font-family: var(--font-heading);
-                    font-size: 0.8rem;
-                    color: var(--clr-primary);
-                    margin-bottom: 8px;
-                    font-weight: 600;
-                }
-
-                .medium-title {
-                    font-size: 1.15rem;
-                    line-height: 1.4;
-                    margin-bottom: 12px;
-                    color: var(--clr-text-main);
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                }
-
-                .medium-snippet {
-                    font-size: 0.95rem;
-                    color: var(--clr-text-muted);
-                    line-height: 1.5;
-                    margin-bottom: 20px;
-                    flex-grow: 1;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 3;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                }
-
-                .medium-tags {
-                    display: flex;
-                    flex-wrap: wrap;
+                    align-items: flex-start;
                     gap: 8px;
-                    margin-top: auto;
+                    padding: 6px 8px;
+                    border-bottom: 1px solid #e0e0e0;
+                    font-family: 'Tahoma','Arial',sans-serif;
+                    font-size: 11px;
+                    color: #000;
                 }
-
-                .medium-tag {
-                    font-size: 0.75rem;
-                    padding: 4px 10px;
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 20px;
-                    color: var(--clr-text-accent);
+                .medium-row:hover {
+                    background: #000080;
+                    color: #fff;
+                }
+                .medium-row:hover a, .medium-row:hover .medium-row-date, .medium-row:hover .medium-row-tag {
+                    color: #fff !important;
+                }
+                .medium-row-content {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                }
+                .medium-row-title {
+                    color: #000080;
+                    font-weight: bold;
+                    text-decoration: underline;
+                    font-size: 11px;
+                }
+                .medium-row-date {
+                    color: #666;
+                    font-size: 10px;
+                }
+                .medium-row-tags {
+                    display: flex;
+                    gap: 4px;
+                    flex-wrap: wrap;
+                }
+                .medium-row-tag {
+                    font-size: 10px;
+                    color: #444;
+                    background: #e0e0e0;
+                    padding: 0 4px;
                 }
             `}</style>
-        </div >
+        </div>
     );
 }
