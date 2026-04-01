@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { motion } from "framer-motion";
 import { Activity, Flame, Trophy, GitCommit } from "lucide-react";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -21,17 +20,16 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
             <div style={{
-                background: "rgba(18, 18, 26, 0.9)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                padding: "12px",
-                borderRadius: "8px",
-                boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
-                backdropFilter: "blur(8px)"
+                background: "#c0c0c0",
+                boxShadow: "inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #404040, inset 2px 2px 0 #d4d0c8",
+                padding: "6px 10px",
+                fontFamily: "'Tahoma','Arial',sans-serif",
+                fontSize: 11,
             }}>
-                <p style={{ color: "#94a3b8", fontSize: "0.75rem", marginBottom: "4px", fontWeight: "500", letterSpacing: "1px", textTransform: "uppercase" }}>{label}</p>
-                <p style={{ color: "#10b981", fontWeight: "bold", fontSize: "1.125rem", margin: 0 }}>
-                    {payload[0].value} <span style={{ fontSize: "0.875rem", fontWeight: "normal", color: "#64748b" }}>commits</span>
-                </p>
+                <div style={{ fontWeight: "bold", color: "#000", marginBottom: 2 }}>{label}</div>
+                <div style={{ color: "#000080" }}>
+                    {payload[0].value} commits
+                </div>
             </div>
         );
     }
@@ -111,241 +109,164 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
 
     if (loading) {
         return (
-            <div className="metrics-loading glass-panel">
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-                    <Activity color="#10b981" size={32} style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
-                    <p style={{ fontSize: "0.875rem", color: "var(--clr-text-muted)" }}>Loading GitHub Impact...</p>
-                </div>
-                <style jsx>{`
-                    .metrics-loading { width: 100%; height: 400px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
-                    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-                `}</style>
+            <div style={{ padding: 8, fontFamily: "'Tahoma','Arial',sans-serif", fontSize: 11, display: "flex", alignItems: "center", gap: 8 }}>
+                <Activity size={14} />
+                Loading GitHub data...
             </div>
         );
     }
 
     if (!data) {
         return (
-            <div className="metrics-loading glass-panel">
-                <p style={{ color: "var(--clr-text-muted)" }}>Unable to load GitHub data.</p>
-                <style jsx>{`.metrics-loading { width: 100%; height: 400px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }`}</style>
+            <div style={{ padding: 8, fontFamily: "'Tahoma','Arial',sans-serif", fontSize: 11, color: "#444" }}>
+                Unable to load GitHub data.
             </div>
         );
     }
 
     return (
-        <ErrorBoundary fallback={<div style={{ width: "100%", height: "400px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--clr-text-muted)" }}>Component Error</div>}>
-            <div className="metrics-container">
+        <ErrorBoundary fallback={<div style={{ padding: 8, fontFamily: "'Tahoma','Arial',sans-serif", fontSize: 11, color: "#444" }}>Component Error</div>}>
+            <div className="github-metrics-win">
                 
-                {/* Header & Main Chart Card */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="metrics-chart-card glass-panel"
-                >
-                    <div className="glow-bg" />
-
-                    <div className="metrics-header">
-                        <h3 className="metrics-title">
-                            <Activity color="#10b981" size={24} />
-                            GitHub Impact
-                        </h3>
-                        <p className="metrics-subtitle">Recent monthly contributions for <span style={{ color: "#10b981" }}>@{username}</span></p>
+                {/* Chart Card */}
+                <div className="github-chart-card">
+                    <div className="github-chart-header">
+                        <Activity size={14} style={{ color: "#000080" }} />
+                        <span style={{ fontSize: 11, fontWeight: "bold", color: "#000" }}>
+                            GitHub Impact — Recent monthly contributions for @{username}
+                        </span>
                     </div>
 
-                    <div className="metrics-chart-wrapper">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="github-chart-area">
+                        <ResponsiveContainer width="100%" height={220}>
                             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 10 }}>
                                 <defs>
                                     <linearGradient id="colorCommits" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                        <stop offset="5%" stopColor="#000080" stopOpacity={0.2}/>
+                                        <stop offset="95%" stopColor="#000080" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
                                 <XAxis 
                                     dataKey="name" 
-                                    stroke="#4b5563" 
-                                    fontSize={12} 
+                                    stroke="#808080" 
+                                    fontSize={10} 
                                     tickLine={false} 
                                     axisLine={false} 
-                                    dy={10}
+                                    dy={8}
+                                    fontFamily="'Tahoma','Arial',sans-serif"
                                 />
                                 <YAxis 
-                                    stroke="#4b5563" 
-                                    fontSize={12} 
+                                    stroke="#808080" 
+                                    fontSize={10} 
                                     tickLine={false} 
                                     axisLine={false}
+                                    fontFamily="'Tahoma','Arial',sans-serif"
                                 />
-                                <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                                <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#808080', strokeWidth: 1, strokeDasharray: '2 2' }} />
                                 <Area 
                                     type="monotone" 
                                     dataKey="commits" 
-                                    stroke="#10b981" 
-                                    strokeWidth={3}
+                                    stroke="#000080" 
+                                    strokeWidth={2}
                                     fillOpacity={1} 
                                     fill="url(#colorCommits)" 
-                                    animationDuration={1500}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Metric Cards Grid */}
-                <div className="metrics-grid">
-                    <MetricCard 
-                        icon={<GitCommit color="#10b981" size={20} />}
+                <div className="github-stats-grid">
+                    <StatCard 
+                        icon={<GitCommit size={14} style={{color: "#000080"}} />}
                         label="Total Commits"
                         value={stats?.total || 0}
                         subtext="Last 365 days"
-                        delay={0.1}
                     />
-                    <MetricCard 
-                        icon={<Flame color="#f97316" size={20} />}
+                    <StatCard 
+                        icon={<Flame size={14} style={{color: "#f97316"}} />}
                         label="Last 30 Days"
                         value={stats?.last30Days || 0}
                         subtext="Recent momentum"
-                        delay={0.2}
                     />
-                    <MetricCard 
-                        icon={<Trophy color="#eab308" size={20} />}
+                    <StatCard 
+                        icon={<Trophy size={14} style={{color: "#eab308"}} />}
                         label="Best Month"
                         value={stats?.bestMonthCommits || 0}
                         subtext={stats?.bestMonth || "N/A"}
-                        delay={0.3}
                     />
-                    <MetricCard 
-                        icon={<Activity color="#3b82f6" size={20} />}
+                    <StatCard 
+                        icon={<Activity size={14} style={{color: "#3b82f6"}} />}
                         label="Monthly Avg"
                         value={stats?.avgPerMonth || 0}
                         subtext="Commits per month"
-                        delay={0.4}
                     />
                 </div>
             </div>
 
             <style jsx global>{`
-                .metrics-container {
-                    width: 100%;
+                .github-metrics-win {
                     display: flex;
                     flex-direction: column;
-                    gap: 32px;
+                    gap: 8px;
                 }
-                .metrics-chart-card {
-                    width: 100%;
-                    border-radius: 16px;
-                    padding: 32px;
-                    position: relative;
-                    overflow: hidden;
-                    background: rgba(10, 10, 15, 0.6);
-                }
-                .glow-bg {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    width: 300px;
-                    height: 300px;
-                    background: rgba(16, 185, 129, 0.08);
-                    border-radius: 50%;
-                    filter: blur(60px);
-                    transform: translate(30%, -50%);
-                    pointer-events: none;
-                }
-                .metrics-header {
-                    margin-bottom: 32px;
-                }
-                .metrics-title {
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    color: var(--clr-text-main);
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    margin-bottom: 8px;
-                }
-                .metrics-subtitle {
-                    color: var(--clr-text-muted);
-                    font-size: 0.95rem;
-                    margin: 0;
-                }
-                .metrics-chart-wrapper {
-                    height: 260px;
-                    width: 100%;
-                    margin-top: 16px;
-                }
-                .metrics-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                    gap: 20px;
-                }
-                .metric-card {
-                    display: flex;
-                    flex-direction: column;
-                    padding: 32px 28px !important;
-                    border-radius: 12px;
-                    position: relative;
-                    overflow: hidden;
-                    background: rgba(10, 10, 15, 0.6);
-                    transition: border-color var(--transition-fast), transform var(--transition-fast);
-                    cursor: default;
-                }
-                .metric-card:hover {
-                    border-color: rgba(16, 185, 129, 0.4);
-                    transform: translateY(-2px);
-                }
-                .metric-icon-wrap {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    margin-bottom: 16px;
-                }
-                .metric-icon-box {
+                .github-chart-card {
+                    background: #c0c0c0;
+                    box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
                     padding: 8px;
-                    border-radius: 8px;
-                    background: rgba(255, 255, 255, 0.05);
+                    font-family: 'Tahoma','Arial',sans-serif;
+                }
+                .github-chart-header {
                     display: flex;
                     align-items: center;
-                    justify-content: center;
+                    gap: 6px;
+                    margin-bottom: 8px;
+                    padding-bottom: 4px;
+                    border-bottom: 1px solid #808080;
                 }
-                .metric-label {
-                    font-size: 0.875rem;
-                    font-weight: 500;
-                    color: var(--clr-text-muted);
-                    margin: 0;
+                .github-chart-area {
+                    background: #ffffff;
+                    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff;
+                    padding: 8px;
                 }
-                .metric-value {
-                    font-size: 2rem;
-                    font-weight: 700;
-                    color: var(--clr-text-main);
-                    margin: 0 0 4px 0;
+                .github-stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                    gap: 6px;
+                }
+                .github-stat-card {
+                    background: #c0c0c0;
+                    box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+                    padding: 8px 10px;
+                    font-family: 'Tahoma','Arial',sans-serif;
+                    font-size: 11px;
+                }
+                .github-stat-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-bottom: 6px;
+                }
+                .github-stat-label {
+                    font-size: 10px;
+                    color: #444;
+                    font-weight: bold;
+                }
+                .github-stat-value {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #000;
                     line-height: 1;
+                    margin-bottom: 2px;
                 }
-                .metric-subtext {
-                    font-size: 0.75rem;
-                    color: var(--clr-text-muted);
-                    margin: 0;
-                }
-                .metric-hover-glow {
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(to top right, transparent, transparent, rgba(16, 185, 129, 0.1));
-                    opacity: 0;
-                    transition: opacity var(--transition-fast);
-                    pointer-events: none;
-                }
-                .metric-card:hover .metric-hover-glow {
-                    opacity: 1;
+                .github-stat-subtext {
+                    font-size: 9px;
+                    color: #666;
                 }
                 @media (max-width: 640px) {
-                    .metrics-grid {
+                    .github-stats-grid {
                         grid-template-columns: 1fr 1fr;
-                    }
-                    .metrics-chart-card {
-                        padding: 24px;
-                    }
-                    .metric-card {
-                        padding: 20px 16px !important;
                     }
                 }
             `}</style>
@@ -353,24 +274,15 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
     );
 }
 
-function MetricCard({ icon, label, value, subtext, delay }) {
+function StatCard({ icon, label, value, subtext }) {
     return (
-        <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay, duration: 0.5 }}
-            className="metric-card glass-panel"
-        >
-            <div className="metric-icon-wrap">
-                <div className="metric-icon-box">
-                    {icon}
-                </div>
-                <p className="metric-label">{label}</p>
+        <div className="github-stat-card">
+            <div className="github-stat-header">
+                {icon}
+                <span className="github-stat-label">{label}</span>
             </div>
-            <p className="metric-value">{value}</p>
-            <p className="metric-subtext">{subtext}</p>
-            
-            <div className="metric-hover-glow" />
-        </motion.div>
+            <div className="github-stat-value">{value}</div>
+            <div className="github-stat-subtext">{subtext}</div>
+        </div>
     );
 }

@@ -54,6 +54,30 @@ export default function CommandMenu() {
     return (
         <div className="cmdk-dialog-overlay" onClick={() => setOpen(false)}>
             <div className="cmdk-dialog" onClick={(e) => e.stopPropagation()}>
+                {/* Win2K title bar */}
+                <div className="win-titlebar" style={{ marginBottom: 0 }}>
+                    <span className="win-titlebar-title">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ marginRight: 4 }}>
+                            <rect x="1" y="1" width="7" height="7" fill="#c0c0c0" />
+                            <rect x="1" y="9" width="7" height="7" fill="#c0c0c0" />
+                            <rect x="9" y="1" width="7" height="7" fill="#c0c0c0" />
+                            <rect x="9" y="9" width="7" height="7" fill="#c0c0c0" />
+                            <rect x="2" y="2" width="5" height="5" fill="#ffffff" />
+                            <rect x="10" y="2" width="5" height="5" fill="#ffffff" />
+                            <line x1="4" y1="4" x2="4" y2="6" stroke="#000080" strokeWidth="1.5" />
+                            <line x1="3.5" y1="5" x2="5.5" y2="5" stroke="#000080" strokeWidth="1.5" />
+                        </svg>
+                        Run — Command Palette
+                    </span>
+                    <span className="win-titlebar-controls" aria-hidden="true">
+                        <button className="win-btn win-btn-close" onClick={() => setOpen(false)} tabIndex="-1">✕</button>
+                    </span>
+                </div>
+                <div style={{ padding: "8px", fontFamily: "'Tahoma','Arial',sans-serif", fontSize: 11, background: "#c0c0c0" }}>
+                    <label style={{ display: "block", marginBottom: 4 }}>
+                        Type a command, navigation target, or link name:
+                    </label>
+                </div>
                 <Command>
                     <Command.Input placeholder="Search commands, projects, links..." autoFocus />
 
@@ -79,6 +103,15 @@ export default function CommandMenu() {
                         </Command.Group>
                     </Command.List>
                 </Command>
+                <div style={{ borderTop: "1px solid #808080", padding: "6px 8px", display: "flex", justifyContent: "flex-end", background: "#c0c0c0", fontFamily: "'Tahoma','Arial',sans-serif" }}>
+                    <button
+                        className="btn-primary"
+                        onClick={() => setOpen(false)}
+                        style={{ minWidth: 75 }}
+                    >
+                        Cancel
+                    </button>
+                </div>
             </div>
         </div>
     );

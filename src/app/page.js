@@ -1,337 +1,754 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Image from "next/image";
-import Hero3DElement from "@/components/Hero3DElement";
-import Profile3D from "@/components/Profile3D";
+import { useEffect, useRef, useState } from "react";
 import ProjectSlider from "@/components/ProjectSlider";
 import GitHubMetrics from "@/components/GitHubMetrics";
 import MediumFeed from "@/components/MediumFeed";
 
+/* ---- Win2K Window component ---- */
+function WinWindow({ title, icon, children, defaultWidth, className = "", id = "" }) {
+  return (
+    <div className={`win-window-outer ${className}`} id={id}>
+      {/* Title bar */}
+      <div className="win-titlebar" role="heading" aria-level="2">
+        <span className="win-titlebar-title">
+          {icon && <img src={icon} alt="" aria-hidden="true" className="win-titlebar-icon" width="16" height="16" />}
+          {title}
+        </span>
+        <span className="win-titlebar-controls" aria-hidden="true">
+          <button className="win-btn" title="Minimize" tabIndex="-1">_</button>
+          <button className="win-btn" title="Maximize" tabIndex="-1">□</button>
+          <button className="win-btn win-btn-close" title="Close" tabIndex="-1">✕</button>
+        </span>
+      </div>
+      {/* Menu bar */}
+      <div className="win-menubar" role="menubar" aria-label={`${title} menu`}>
+        <span className="win-menu-item">File</span>
+        <span className="win-menu-item">Edit</span>
+        <span className="win-menu-item">View</span>
+        <span className="win-menu-item">Help</span>
+      </div>
+      {/* Content */}
+      <div className="win-window-body">
+        {children}
+      </div>
+      {/* Status bar */}
+      <div className="win-statusbar" role="status">
+        <span className="win-statusbar-pane">Ready</span>
+        <span className="win-statusbar-pane">alexschmaltz.com</span>
+      </div>
+
+      <style jsx>{`
+        .win-window-outer {
+          background: #c0c0c0;
+          box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #808080, inset 2px 2px 0 #d4d0c8, 4px 4px 10px rgba(0,0,0,0.4);
+          margin-bottom: 16px;
+          max-width: ${defaultWidth || "100%"};
+          width: 100%;
+        }
+        .win-window-body {
+          padding: 8px;
+          background: #c0c0c0;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ---- IE-style browser window ---- */
+function BrowserWindow({ url, title, children }) {
+  return (
+    <div className="ie-window">
+      <div className="ie-titlebar">
+        <span className="ie-title">
+          <svg width="14" height="14" viewBox="0 0 32 32" aria-hidden="true" style={{ marginRight: 4 }}>
+            <circle cx="16" cy="16" r="14" fill="#0078d7" />
+            <path d="M10 16 Q16 6 22 16 Q16 26 10 16Z" fill="white" />
+            <ellipse cx="16" cy="16" rx="14" ry="6" fill="none" stroke="white" strokeWidth="1.5" />
+          </svg>
+          {title} - Microsoft Internet Explorer
+        </span>
+        <span className="ie-controls" aria-hidden="true">
+          <button className="win-btn" tabIndex="-1">_</button>
+          <button className="win-btn" tabIndex="-1">□</button>
+          <button className="win-btn win-btn-close" tabIndex="-1">✕</button>
+        </span>
+      </div>
+      <div className="ie-menubar">
+        <span className="win-menu-item">File</span>
+        <span className="win-menu-item">Edit</span>
+        <span className="win-menu-item">View</span>
+        <span className="win-menu-item">Favorites</span>
+        <span className="win-menu-item">Tools</span>
+        <span className="win-menu-item">Help</span>
+      </div>
+      <div className="ie-toolbar">
+        <button className="win-toolbar-btn" aria-label="Back">◄ Back</button>
+        <button className="win-toolbar-btn" aria-label="Forward">Forward ►</button>
+        <button className="win-toolbar-btn" aria-label="Stop">Stop</button>
+        <button className="win-toolbar-btn" aria-label="Refresh">Refresh</button>
+        <button className="win-toolbar-btn" aria-label="Home">Home</button>
+        <span className="win-toolbar-sep" aria-hidden="true"></span>
+        <button className="win-toolbar-btn" aria-label="Search">Search</button>
+        <button className="win-toolbar-btn" aria-label="Favorites">Favorites</button>
+      </div>
+      <div className="ie-address-bar">
+        <label className="win-address-label" htmlFor="ie-url-bar">Address</label>
+        <input
+          id="ie-url-bar"
+          className="win-address-input"
+          type="text"
+          value={url}
+          readOnly
+          aria-label={`Current URL: ${url}`}
+        />
+        <button className="win-toolbar-btn" aria-label="Go">Go</button>
+      </div>
+      <div className="ie-content">
+        {children}
+      </div>
+      <div className="ie-statusbar" role="status">
+        <span className="win-statusbar-pane" style={{ flex: 1 }}>Done</span>
+        <span className="win-statusbar-pane" aria-label="Security zone">Internet</span>
+      </div>
+
+      <style jsx>{`
+        .ie-window {
+          background: #c0c0c0;
+          box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #808080, inset 2px 2px 0 #d4d0c8, 6px 6px 16px rgba(0,0,0,0.4);
+          margin-bottom: 16px;
+          width: 100%;
+        }
+        .ie-titlebar {
+          background: linear-gradient(to right, #000080, #1084d0);
+          color: #fff;
+          padding: 3px 6px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          min-height: 21px;
+          user-select: none;
+        }
+        .ie-title {
+          font-size: 11px;
+          font-weight: bold;
+          font-family: 'Tahoma', 'Arial', sans-serif;
+          display: flex;
+          align-items: center;
+        }
+        .ie-controls {
+          display: flex;
+          gap: 2px;
+        }
+        .ie-menubar {
+          background: #c0c0c0;
+          padding: 2px 4px;
+          display: flex;
+          gap: 0;
+          border-bottom: 1px solid #808080;
+        }
+        .ie-toolbar {
+          background: #c0c0c0;
+          padding: 2px 4px;
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          border-bottom: 1px solid #808080;
+          flex-wrap: wrap;
+        }
+        .ie-address-bar {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 2px 4px;
+          background: #c0c0c0;
+          border-bottom: 1px solid #808080;
+        }
+        .ie-content {
+          padding: 16px;
+          background: #ffffff;
+          min-height: 200px;
+        }
+        .ie-statusbar {
+          background: #c0c0c0;
+          padding: 2px 8px;
+          font-size: 11px;
+          color: #444;
+          border-top: 1px solid #808080;
+          display: flex;
+          gap: 4px;
+          align-items: center;
+          font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ---- Reveal wrapper ---- */
 function RevealWrapper({ children, animation = "reveal-up", delay = "", className = "", style = {} }) {
   const ref = useRef(null);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-      }
-    }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) entry.target.classList.add("active"); },
+      { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
+    );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-
   return <div ref={ref} className={`${animation} ${delay} ${className}`.trim()} style={style}>{children}</div>;
 }
 
+/* ---- Skill list item ---- */
+function SkillItem({ name }) {
+  return (
+    <li className="skill-item">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="14" height="14" rx="0" fill="#c0c0c0" 
+          style={{filter: "drop-shadow(inset -1px -1px 0 #808080) drop-shadow(inset 1px 1px 0 #fff)"}} />
+        <polyline points="3,8 6,12 13,4" stroke="#000080" strokeWidth="2" fill="none" />
+      </svg>
+      {name}
+      <style jsx>{`
+        .skill-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 2px 4px;
+          font-size: 11px;
+          color: #000;
+          font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+        .skill-item:hover {
+          background: #000080;
+          color: #fff;
+        }
+      `}</style>
+    </li>
+  );
+}
+
+/* ---- Main Page ---- */
 export default function Home() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <>
-      <section id="home" className="hero section-spacing">
-        <div className="hero-content">
-          <RevealWrapper><p className="greeting">Hi, my name is</p></RevealWrapper>
-          <RevealWrapper delay="delay-1"><h1 className="hero-title">Alex Schmaltz.</h1></RevealWrapper>
-          <RevealWrapper delay="delay-2"><h2 className="hero-subtitle">I build things.</h2></RevealWrapper>
-          <RevealWrapper delay="delay-3">
-            <p className="hero-desc">
-              I&apos;m a software engineer and web developer specializing in building (and occasionally designing) exceptional digital experiences. Currently, I&apos;m focused on building accessible, human-centered products.
-            </p>
-          </RevealWrapper>
-          <RevealWrapper delay="delay-4">
-            <div className="hero-cta"><a href="#projects" className="btn-primary">Check out my work</a></div>
-          </RevealWrapper>
-        </div>
-        <RevealWrapper
-          animation="reveal-fade"
-          delay="delay-5"
-          style={{
-            flex: 1,
-            width: '100%',
-            height: '400px',
-            minHeight: '400px',
-            position: 'relative',
-            display: 'block'
-          }}
-        >
-          <div className="hero-image-container" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-            <Hero3DElement />
-          </div>
+      {/* Hero / Welcome Dialog */}
+      <section id="home" className="hero-section" aria-labelledby="hero-title">
+        <RevealWrapper>
+          <BrowserWindow url="http://www.alexschmaltz.com/" title="Alex Schmaltz - Portfolio">
+            <div className="hero-inner">
+              <div className="hero-text-area">
+                <p className="hero-greeting">Welcome to</p>
+                <h1 id="hero-title" className="hero-name">Alex Schmaltz</h1>
+                <h2 className="hero-subtitle">Software Engineer &amp; Web Developer</h2>
+                <p className="hero-desc">
+                  I&apos;m a software engineer and web developer specializing in building exceptional
+                  digital experiences. Currently focused on building accessible, human-centered products.
+                </p>
+                <div className="hero-cta-row">
+                  <a href="#projects" className="btn-primary">View My Work</a>
+                  <a href="#contact" className="btn-primary">Contact Me</a>
+                  <button className="btn-primary" onClick={() => setDialogOpen(true)}>Learn More...</button>
+                </div>
+              </div>
+              <div className="hero-sidebar">
+                <div className="win-groupbox" style={{ marginTop: 0 }}>
+                  <span className="win-groupbox-title">Quick Links</span>
+                  <ul style={{ listStyle: "none", padding: 0 }}>
+                    {[
+                      { href: "#about", label: "About Me" },
+                      { href: "#skills", label: "Skills" },
+                      { href: "#projects", label: "Projects" },
+                      { href: "#contact", label: "Contact" },
+                      { href: "https://github.com/schmalaa", label: "GitHub" },
+                      { href: "https://medium.com/@schmalaa", label: "Medium Blog" },
+                    ].map((item) => (
+                      <li key={item.href} className="win-listview-row">
+                        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" style={{ flexShrink: 0 }}>
+                          <polygon points="2,1 10,6 2,11" fill="#000080" />
+                        </svg>
+                        <a href={item.href} style={{ color: "#000080", textDecoration: "underline", fontSize: "11px" }}>{item.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="win-groupbox">
+                  <span className="win-groupbox-title">Status</span>
+                  <p style={{ fontSize: "11px", marginBottom: 6 }}>
+                    <strong>Available for:</strong><br />
+                    Freelance &amp; Full-time
+                  </p>
+                  <div className="win-progress-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Availability: 85%">
+                    <div className="win-progress-fill" style={{ width: "85%" }}>
+                      <span style={{ color: "#fff", fontSize: "10px" }}>85%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </BrowserWindow>
         </RevealWrapper>
       </section>
 
-      <section id="about" className="about section-spacing">
-        <RevealWrapper><h2 className="section-heading"><span className="heading-number">01.</span> About Me</h2></RevealWrapper>
-        <div className="about-content">
-          <RevealWrapper delay="delay-1">
-            <div className="about-text glass-panel">
-              <p>Hello! I&apos;m Alex Schmaltz, a passionate web developer with a keen eye for modern design and robust architecture.</p>
-              <p>My journey in web development started back when I found dreamweaver installed on a school computer, which taught me a lot about HTML & CSS (the wrong way)!</p>
-              <p>Fast-forward to today, and I&apos;ve had the privilege of working on varying projects, focusing on delivering high-quality, impactful solutions. I thrive in environments where I can combine my technical skills with creative problem-solving.</p>
+      {/* "Learn More" dialog */}
+      {dialogOpen && (
+        <div
+          style={{
+            position: "fixed", inset: 0, zIndex: 900,
+            background: "rgba(0,0,0,0.35)",
+            display: "flex", alignItems: "center", justifyContent: "center"
+          }}
+          onClick={() => setDialogOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="About Alex dialog"
+        >
+          <div
+            style={{
+              background: "#c0c0c0",
+              boxShadow: "inset -1px -1px 0 #404040, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #d4d0c8, 4px 4px 10px rgba(0,0,0,0.5)",
+              width: 380,
+              fontFamily: "'Tahoma','Arial',sans-serif",
+              fontSize: 11,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="win-titlebar">
+              <span className="win-titlebar-title">About Alex Schmaltz</span>
+              <span className="win-titlebar-controls">
+                <button className="win-btn win-btn-close" onClick={() => setDialogOpen(false)} aria-label="Close dialog">✕</button>
+              </span>
             </div>
-          </RevealWrapper>
-          <RevealWrapper delay="delay-2">
-            <div className="profile-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Profile3D />
+            <div style={{ padding: 16, display: "flex", gap: 12 }}>
+              <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style={{ flexShrink: 0 }}>
+                <circle cx="16" cy="10" r="8" fill="#000080" />
+                <rect x="4" y="22" width="24" height="8" rx="2" fill="#000080" />
+              </svg>
+              <div>
+                <p style={{ marginBottom: 8 }}>
+                  <strong>Alex Schmaltz</strong> is a passionate web developer with a keen eye for 
+                  modern design and robust architecture.
+                </p>
+                <p style={{ color: "#444" }}>
+                  His journey started with Dreamweaver on a school computer, which taught him HTML &amp; CSS the wrong way — 
+                  and he&apos;s been correcting it ever since.
+                </p>
+              </div>
             </div>
-          </RevealWrapper>
+            <div style={{ borderTop: "1px solid #808080", padding: "8px 16px", display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <button className="btn-primary" onClick={() => setDialogOpen(false)}>OK</button>
+            </div>
+          </div>
         </div>
+      )}
+
+      {/* About Section */}
+      <section id="about" aria-labelledby="about-heading">
+        <RevealWrapper delay="delay-1">
+          <WinWindow title="About Me - Notepad" id="about-window">
+            <div className="about-content">
+              <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 4, borderBottom: "1px solid #808080", paddingBottom: 6 }}>
+                <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect x="1" y="1" width="14" height="14" fill="#ffffff" stroke="#808080" />
+                  <line x1="3" y1="4" x2="13" y2="4" stroke="#000" strokeWidth="1" />
+                  <line x1="3" y1="7" x2="13" y2="7" stroke="#000" strokeWidth="1" />
+                  <line x1="3" y1="10" x2="9" y2="10" stroke="#000" strokeWidth="1" />
+                </svg>
+                <h2 id="about-heading" style={{ fontSize: 11, fontWeight: "bold" }}>
+                  <span style={{ color: "#000080" }}>01.</span> About Me
+                </h2>
+              </div>
+              <div className="about-textarea">
+                <p>Hello! I&apos;m Alex Schmaltz, a passionate web developer with a keen eye for modern design and robust architecture.</p>
+                <br />
+                <p>My journey in web development started back when I found Dreamweaver installed on a school computer, which taught me a lot about HTML &amp; CSS (the wrong way)!</p>
+                <br />
+                <p>Fast-forward to today, and I&apos;ve had the privilege of working on varying projects, focusing on delivering high-quality, impactful solutions. I thrive in environments where I can combine my technical skills with creative problem-solving.</p>
+              </div>
+            </div>
+          </WinWindow>
+        </RevealWrapper>
       </section>
 
-      <section id="skills" className="skills section-spacing">
-        <RevealWrapper><h2 className="section-heading"><span className="heading-number">02.</span> My Arsenal</h2></RevealWrapper>
-        <div className="skills-grid">
-          <RevealWrapper delay="delay-1">
-            <div className="skill-category glass-card">
-              <h3>Frontend</h3>
-              <ul className="skill-list">
-                <li>HTML5 & CSS3</li>
-                <li>JavaScript (ES6+)</li>
-                <li>React / Next.js</li>
-                <li>TypeScript</li>
-                <li>Angular</li>
-              </ul>
+      {/* Skills Section */}
+      <section id="skills" aria-labelledby="skills-heading">
+        <RevealWrapper delay="delay-2">
+          <WinWindow title="My Arsenal - Windows Explorer" id="skills-window">
+            <h2 id="skills-heading" style={{ fontSize: 11, fontWeight: "bold", marginBottom: 8 }}>
+              <span style={{ color: "#000080" }}>02.</span> My Arsenal
+            </h2>
+            <div className="skills-content">
+              <div className="win-groupbox" style={{ marginTop: 0, flex: 1 }}>
+                <span className="win-groupbox-title">Frontend</span>
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {["HTML5 & CSS3", "JavaScript (ES6+)", "React / Next.js", "TypeScript", "Angular"].map(s => (
+                    <SkillItem key={s} name={s} />
+                  ))}
+                </ul>
+              </div>
+              <div className="win-groupbox" style={{ marginTop: 0, flex: 1 }}>
+                <span className="win-groupbox-title">Backend</span>
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {["Node.js", "Go", "Python", "RESTful APIs", "PHP"].map(s => (
+                    <SkillItem key={s} name={s} />
+                  ))}
+                </ul>
+              </div>
+              <div className="win-groupbox" style={{ marginTop: 0, flex: 1 }}>
+                <span className="win-groupbox-title">Database &amp; Tools</span>
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {["PostgreSQL / MongoDB", "Git & GitHub", "Linux", "Figma", "AWS"].map(s => (
+                    <SkillItem key={s} name={s} />
+                  ))}
+                </ul>
+              </div>
             </div>
-          </RevealWrapper>
-          <RevealWrapper delay="delay-2">
-            <div className="skill-category glass-card">
-              <h3>Backend</h3>
-              <ul className="skill-list">
-                <li>Node.js</li>
-                <li>Go</li>
-                <li>Python</li>
-                <li>RESTful APIs</li>
-                <li>PHP</li>
-              </ul>
-            </div>
-          </RevealWrapper>
-          <RevealWrapper delay="delay-3">
-            <div className="skill-category glass-card">
-              <h3>Database & Tools</h3>
-              <ul className="skill-list">
-                <li>PostgreSQL / MongoDB</li>
-                <li>Git & GitHub</li>
-                <li>Linux</li>
-                <li>Figma</li>
-                <li>AWS</li>
-              </ul>
-            </div>
-          </RevealWrapper>
-        </div>
 
-        <div style={{ marginTop: "60px" }}>
-          <RevealWrapper delay="delay-4">
-            <GitHubMetrics username="schmalaa" />
-          </RevealWrapper>
-        </div>
+            <div style={{ marginTop: 16, borderTop: "1px solid #808080", paddingTop: 12 }}>
+              <h3 style={{ fontSize: 11, fontWeight: "bold", marginBottom: 8 }}>GitHub Impact</h3>
+              <GitHubMetrics username="schmalaa" />
+            </div>
 
-        {/* Medium Articles Section */}
-        <div style={{ marginTop: "60px" }}>
-          <RevealWrapper delay="delay-5">
-            <h3 style={{ fontSize: "1.5rem", marginBottom: "20px", color: "var(--clr-text-main)", position: "relative", display: "inline-block" }}>
-              Latest Insights
-            </h3>
-            <MediumFeed username="schmalaa" />
-          </RevealWrapper>
-        </div>
+            <div style={{ marginTop: 16, borderTop: "1px solid #808080", paddingTop: 12 }}>
+              <h3 style={{ fontSize: 11, fontWeight: "bold", marginBottom: 8 }}>Latest Insights</h3>
+              <MediumFeed username="schmalaa" />
+            </div>
+          </WinWindow>
+        </RevealWrapper>
       </section>
 
-      <section id="projects" className="projects section-spacing">
-        <RevealWrapper><h2 className="section-heading"><span className="heading-number">03.</span> Featured Projects</h2></RevealWrapper>
-        <div className="project-list">
+      {/* Projects Section */}
+      <section id="projects" aria-labelledby="projects-heading">
+        <RevealWrapper delay="delay-3">
+          <WinWindow title="Featured Projects - Windows Explorer" id="projects-window">
+            <h2 id="projects-heading" style={{ fontSize: 11, fontWeight: "bold", marginBottom: 12 }}>
+              <span style={{ color: "#000080" }}>03.</span> Featured Projects
+            </h2>
 
-          <RevealWrapper delay="delay-1">
-            <article className="project-card">
-              <div className="project-content glass-panel">
-                <p className="project-overline">Featured Project</p>
-                <h3 className="project-title">LeadRevival</h3>
-                <div className="project-description">
-                  <p>A full-stack SaaS platform for reviving stale leads for businesses. Utilizes AI to analyze and re-engage leads, increasing conversion rates.</p>
-                </div>
-                <div className="project-links" style={{ marginBottom: "20px" }}>
-                  <a href="https://getleadrevival.ai" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
-                    <span>Visit Site</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  </a>
-                </div>
-                <ul className="project-tech-list">
-                  <li>Next.js</li><li>Node.js</li><li>Stripe</li><li>PostgreSQL</li>
-                </ul>
-              </div>
-              <div className="project-image glass-panel" style={{ padding: 0 }}>
-                <ProjectSlider images={[
-                  { src: "/leadrevival.jpg", alt: "LeadRevival main dashboard view" },
-                  { src: "/dashboard.jpg", alt: "LeadRevival analytics overview" },
-                  { src: "/leads-table.jpg", alt: "LeadRevival detailed leads table" },
-                  { src: "/email-composer.jpg", alt: "LeadRevival AI email composer" }
-                ]} />
-              </div>
-            </article>
-          </RevealWrapper>
+            <ProjectCard
+              title="LeadRevival"
+              url="https://getleadrevival.ai"
+              desc="A full-stack SaaS platform for reviving stale leads for businesses. Utilizes AI to analyze and re-engage leads, increasing conversion rates."
+              tech={["Next.js", "Node.js", "Stripe", "PostgreSQL"]}
+              images={[
+                { src: "/leadrevival.jpg", alt: "LeadRevival main dashboard view" },
+                { src: "/dashboard.jpg", alt: "LeadRevival analytics overview" },
+                { src: "/leads-table.jpg", alt: "LeadRevival detailed leads table" },
+                { src: "/email-composer.jpg", alt: "LeadRevival AI email composer" },
+              ]}
+            />
 
-          <RevealWrapper delay="delay-2">
-            <article className="project-card reverse">
-              <div className="project-content glass-panel">
-                <p className="project-overline">Featured Project</p>
-                <h3 className="project-title">Bolt Design System</h3>
-                <div className="project-description">
-                  <p>A comprehensive design system for Nationwide Insurance, providing a consistent and accessible visual language for all digital products.</p>
-                </div>
-                <div className="project-links" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
-                  <a href="https://bolt.nationwide.com" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
-                    <span>Visit Site</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  </a>
-                </div>
-                <ul className="project-tech-list">
-                  <li>TypeScript</li><li>SASS</li><li>Storybook</li><li>Figma</li>
-                </ul>
-              </div>
-              <div className="project-image glass-panel" style={{ padding: 0 }}>
-                <ProjectSlider images={[
-                  { src: "/bolt-home.jpg", alt: "Bolt Design System homepage" },
-                  { src: "/bolt-button.jpg", alt: "Bolt Design System interactive button component" }
-                ]} />
-              </div>
-            </article>
-          </RevealWrapper>
+            <ProjectCard
+              title="Bolt Design System"
+              url="https://bolt.nationwide.com"
+              desc="A comprehensive design system for Nationwide Insurance, providing a consistent and accessible visual language for all digital products."
+              tech={["TypeScript", "SASS", "Storybook", "Figma"]}
+              images={[
+                { src: "/bolt-home.jpg", alt: "Bolt Design System homepage" },
+                { src: "/bolt-button.jpg", alt: "Bolt Design System interactive button component" },
+              ]}
+            />
 
-          <RevealWrapper delay="delay-3">
-            <article className="project-card">
-              <div className="project-content glass-panel">
-                <p className="project-overline">Featured Project</p>
-                <h3 className="project-title">
-                  <a href="https://github.com/schmalaa/codebase-architect" target="_blank" rel="noopener noreferrer" style={{ color: "var(--clr-text-main)", textDecoration: "none" }}>
-                    Codebase Architect
-                  </a>
-                </h3>
-                <div className="project-description">
-                  <p>A Next.js application that visualizes GitHub repositories with React Flow and explains code files using an AI agent.</p>
-                </div>
-                <div className="project-links" style={{ marginBottom: "20px" }}>
-                  <a href="https://codebase-architect.vercel.app/" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
-                    <span>Visit Site</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  </a>
-                </div>
-                <ul className="project-tech-list">
-                  <li>Next.js</li><li>React Flow</li><li>AI SDK</li><li>GitHub API</li><li>Open Source</li>
-                </ul>
-              </div>
-              <div className="project-image glass-panel" style={{ padding: 0 }}>
-                <ProjectSlider images={[
-                  { src: "/homepage.jpg", alt: "Codebase Architect homepage showing repository visualizer" },
-                  { src: "/agent-answer.jpg", alt: "Codebase Architect AI agent answering query" }
-                ]} />
-              </div>
-            </article>
-          </RevealWrapper>
+            <ProjectCard
+              title="Codebase Architect"
+              url="https://codebase-architect.vercel.app/"
+              desc="A Next.js application that visualizes GitHub repositories with React Flow and explains code files using an AI agent."
+              tech={["Next.js", "React Flow", "AI SDK", "GitHub API", "Open Source"]}
+              images={[
+                { src: "/homepage.jpg", alt: "Codebase Architect homepage" },
+                { src: "/agent-answer.jpg", alt: "Codebase Architect AI agent" },
+              ]}
+            />
 
-          <RevealWrapper delay="delay-4">
-            <article className="project-card reverse">
-              <div className="project-content glass-panel">
-                <p className="project-overline">Featured Project</p>
-                <h3 className="project-title">
-                  <a href="https://www.synapse-snake.com/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--clr-text-main)", textDecoration: "none" }}>
-                    Synapse Snake
-                  </a>
-                </h3>
-                <div className="project-description">
-                  <p>A high-stakes, balanced rogue-lite survival game. Features exponential enemy scaling, a dynamic boss spawn system, and unique hero attacks. This is an ongoing project!</p>
-                </div>
-                <div className="project-links" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
-                  <a href="https://www.synapse-snake.com/" target="_blank" rel="noopener noreferrer" className="project-link" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--clr-primary)", fontWeight: "500", textDecoration: "none" }}>
-                    <span>Visit Site</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  </a>
-                </div>
-                <ul className="project-tech-list">
-                  <li>React</li><li>Vite</li><li>Web Audio API</li><li>Canvas</li>
-                </ul>
-              </div>
-              <div className="project-image glass-panel" style={{ padding: 0 }}>
-                <ProjectSlider images={[
-                  { src: "/synapse-snake-new-1.png", alt: "Synapse Snake gameplay showing enemies" },
-                  { src: "/synapse-snake-new-2.png", alt: "Synapse Snake character selection screen" },
-                  { src: "/gameplay.mp4", alt: "Synapse Snake high-stakes gameplay recording" }
-                ]} />
-              </div>
-            </article>
-          </RevealWrapper>
-        </div>
+            <ProjectCard
+              title="Synapse Snake"
+              url="https://www.synapse-snake.com/"
+              desc="A high-stakes, balanced rogue-lite survival game. Features exponential enemy scaling, a dynamic boss spawn system, and unique hero attacks."
+              tech={["React", "Vite", "Web Audio API", "Canvas"]}
+              images={[
+                { src: "/synapse-snake-new-1.png", alt: "Synapse Snake gameplay" },
+                { src: "/synapse-snake-new-2.png", alt: "Synapse Snake character selection" },
+              ]}
+            />
+          </WinWindow>
+        </RevealWrapper>
       </section>
 
-      <RevealWrapper>
-        <section id="contact" className="contact section-spacing">
-          <h2 className="section-heading" style={{ justifyContent: 'center' }}><span className="heading-number">04.</span> What&apos;s Next?</h2>
-          <h2 className="contact-title">Get In Touch</h2>
-          <p className="contact-text">
-            Although I&apos;m not currently looking for any new opportunities, my inbox is always open. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
-          </p>
-          <a href="mailto:alex.schmaltz@gmail.com" className="btn-primary contact-btn">Say Hello</a>
-        </section>
-      </RevealWrapper>
+      {/* Contact Section */}
+      <section id="contact" aria-labelledby="contact-heading">
+        <RevealWrapper delay="delay-4">
+          <WinWindow title="Contact - Send Message" id="contact-window">
+            <h2 id="contact-heading" style={{ fontSize: 11, fontWeight: "bold", marginBottom: 8 }}>
+              <span style={{ color: "#000080" }}>04.</span> Get In Touch
+            </h2>
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" style={{ flexShrink: 0 }}>
+                <rect x="4" y="10" width="40" height="28" rx="2" fill="#ffffff" stroke="#808080" strokeWidth="2" />
+                <polyline points="4,10 24,28 44,10" fill="none" stroke="#000080" strokeWidth="2" />
+                <line x1="4" y1="38" x2="18" y2="24" stroke="#808080" strokeWidth="1.5" />
+                <line x1="44" y1="38" x2="30" y2="24" stroke="#808080" strokeWidth="1.5" />
+              </svg>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 13, fontWeight: "bold", marginBottom: 4 }}>What&apos;s Next?</p>
+                <p style={{ fontSize: 11, color: "#444", marginBottom: 12 }}>
+                  Although I&apos;m not currently looking for any new opportunities, my inbox is always open. 
+                  Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
+                </p>
+                <div style={{ marginBottom: 8 }}>
+                  <label style={{ fontSize: 11, display: "block", marginBottom: 2 }} htmlFor="contact-email">Your Email:</label>
+                  <input id="contact-email" type="email" className="win-text-field" placeholder="you@example.com" style={{ width: "100%", marginBottom: 8 }} />
+                  <label style={{ fontSize: 11, display: "block", marginBottom: 2 }} htmlFor="contact-msg">Message:</label>
+                  <textarea
+                    id="contact-msg"
+                    className="win-text-field"
+                    rows={4}
+                    placeholder="Type your message here..."
+                    style={{ width: "100%", resize: "vertical", marginBottom: 8 }}
+                  />
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <a href="mailto:alex.schmaltz@gmail.com" className="btn-primary">Send Email</a>
+                  <a href="mailto:alex.schmaltz@gmail.com" className="btn-primary">Say Hello</a>
+                </div>
+              </div>
+            </div>
+          </WinWindow>
+        </RevealWrapper>
+      </section>
 
       <style jsx>{`
-        /* Scoped styles referencing globals.css variables */
-        
-        /* Hero Section */
-        .hero { flex-direction: row; align-items: center; justify-content: space-between; }
-        .hero-content { flex: 1; max-width: 600px; }
-        .greeting { color: var(--clr-primary); font-family: var(--font-heading); font-weight: 600; margin-bottom: 20px; font-size: clamp(16px, 2vw, 20px); }
-        .hero-title { font-size: clamp(40px, 8vw, 80px); line-height: 1; color: var(--clr-text-main); }
-        .hero-subtitle { font-size: clamp(30px, 6vw, 60px); line-height: 1; color: var(--clr-text-muted); margin-top: 10px; margin-bottom: 30px; }
-        .hero-desc { color: var(--clr-text-muted); font-size: 1.1rem; max-width: 500px; margin-bottom: 50px; }
-        
+        /* Hero layout */
+        .hero-section { padding-top: 0; }
+        .hero-inner {
+          display: grid;
+          grid-template-columns: 1fr 200px;
+          gap: 12px;
+          align-items: flex-start;
+          background: #ffffff;
+          padding: 12px;
+        }
+        .hero-greeting {
+          font-size: 11px;
+          color: #444;
+          margin-bottom: 4px;
+        }
+        .hero-name {
+          font-size: 28px;
+          font-weight: bold;
+          color: #000080;
+          margin-bottom: 4px;
+          line-height: 1.1;
+        }
+        .hero-subtitle {
+          font-size: 16px;
+          font-weight: bold;
+          color: #000;
+          margin-bottom: 8px;
+        }
+        .hero-desc {
+          font-size: 11px;
+          color: #444;
+          margin-bottom: 12px;
+          max-width: 480px;
+          line-height: 1.5;
+        }
+        .hero-cta-row {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .hero-sidebar {
+          min-width: 0;
+        }
+
         /* About */
-        .about-content { display: grid; grid-template-columns: 3fr 2fr; gap: 50px; align-items: center; }
-        .about-text { padding: 30px; border-radius: 12px; font-size: 1.05rem; }
-        .about-text p { margin-bottom: 15px; color: var(--clr-text-muted); }
-        .profile-container { position: relative; width: 100%; max-width: 400px; margin: 0 auto; min-height: 400px; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .about-content { padding: 4px; }
+        .about-textarea {
+          background: #ffffff;
+          box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #404040, inset -2px -2px 0 #d4d0c8;
+          padding: 8px;
+          font-size: 11px;
+          color: #000;
+          line-height: 1.6;
+          min-height: 120px;
+          font-family: 'Courier New', monospace;
+        }
 
         /* Skills */
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .skill-category { padding: 30px; border-radius: 16px; transition: transform var(--transition-normal), box-shadow var(--transition-normal); }
-        .skill-category:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--clr-primary-glow); border-color: rgba(124, 58, 237, 0.3); }
-        .skill-category h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--clr-text-main); position: relative; display: inline-block; }
-        .skill-category h3::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 30px; height: 2px; background: var(--clr-secondary); }
-        .skill-list li { margin-bottom: 10px; color: var(--clr-text-muted); display: flex; align-items: center; }
-        .skill-list li::before { content: '▹'; color: var(--clr-primary); margin-right: 10px; font-size: 1.2rem; }
+        .skills-content {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
 
-        /* Projects */
-        .project-list { display: flex; flex-direction: column; gap: 80px; }
-        .project-card { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); align-items: center; gap: 40px; }
-        .project-content { grid-column: 1 / 7; grid-row: 1 / -1; padding: 40px; border-radius: 16px; z-index: 2; position: relative; }
-        .project-image { grid-column: 7 / -1; grid-row: 1 / -1; position: relative; z-index: 1; border-radius: 12px; height: 100%; min-height: 350px; overflow: hidden; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); display: flex; align-items: center; justify-content: center; transition: var(--transition-normal); }
-        .image-placeholder { color: var(--clr-text-muted); font-family: var(--font-heading); font-size: 1.1rem; opacity: 0.5; }
-        .project-card:hover .project-image { transform: scale(1.02); }
-        .project-card.reverse .project-content { grid-column: 7 / -1; text-align: right; }
-        .project-card.reverse .project-image { grid-column: 1 / 7; }
-        .project-card.reverse .project-tech-list { justify-content: flex-end; }
-        .project-overline { color: var(--clr-primary); font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
-        .project-title { font-size: clamp(24px, 4vw, 32px); margin-bottom: 20px; }
-        .project-description { background: rgba(10, 10, 15, 0.7); padding: 25px; border-radius: 8px; color: var(--clr-text-muted); font-size: 1.05rem; margin-bottom: 20px; box-shadow: 0 10px 30px -15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
-        .project-link:hover { color: var(--clr-secondary) !important; text-decoration: underline !important; }
-        .project-link svg { transition: transform 0.2s ease; }
-        .project-link:hover svg { transform: translate(2px, -2px); }
-        .project-tech-list { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; font-family: var(--font-heading); font-size: 0.9rem; color: var(--clr-text-accent); }
-
-        /* Contact */
-        .contact { text-align: center; max-width: 600px; margin: 0 auto; align-items: center; }
-        .contact-title { font-size: clamp(40px, 5vw, 60px); margin-bottom: 20px; }
-        .contact-text { color: var(--clr-text-muted); font-size: 1.1rem; margin-bottom: 50px; }
-        .contact-btn { padding: 1.25rem 2.5rem; font-size: 1.1rem; }
-
-        @media (max-width: 768px) {
-            .hero { flex-direction: column; justify-content: center; text-align: center; padding-top: 150px; }
-            .hero-content { align-items: center; display: flex; flex-direction: column; }
-            .hero-desc { text-align: center; }
-            .about-content { grid-template-columns: 1fr; }
-            .project-card, .project-card.reverse { display: flex; flex-direction: column; gap: 20px; }
-            .project-content { padding: 30px 20px; text-align: left; }
-            .project-image { min-height: 250px; height: 300px; width: 100%; order: -1; margin-bottom: 10px; flex-shrink: 0; }
-            .project-card.reverse .project-tech-list { justify-content: flex-start; }
-            .section-heading::after { display: none; }
+        /* Responsive */
+        @media (max-width: 640px) {
+          .hero-inner {
+            grid-template-columns: 1fr;
+          }
+          .hero-sidebar { display: none; }
+          .skills-content { flex-direction: column; }
+          .hero-name { font-size: 20px; }
+          .hero-subtitle { font-size: 13px; }
         }
       `}</style>
     </>
+  );
+}
+
+/* ---- Project card as Win2K dialog ---- */
+function ProjectCard({ title, url, desc, tech, images }) {
+  const [active, setActive] = useState(false);
+
+  return (
+    <div
+      className={`proj-card ${active ? "active" : ""}`}
+      onClick={() => setActive(!active)}
+      role="article"
+    >
+      <div className="proj-card-header">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <rect x="1" y="1" width="14" height="14" fill="#c0c0c0"
+            style={{ filter: "drop-shadow(inset -1px -1px 0 #808080) drop-shadow(inset 1px 1px 0 #fff)" }} />
+          <rect x="2" y="2" width="7" height="5" fill="#000080" />
+          <rect x="10" y="2" width="3" height="3" fill="#c0c0c0"
+            style={{ filter: "drop-shadow(inset -1px -1px 0 #808080) drop-shadow(inset 1px 1px 0 #fff)" }} />
+          <rect x="2" y="9" width="12" height="2" fill="#808080" />
+          <rect x="2" y="12" width="8" height="2" fill="#808080" />
+        </svg>
+        <span className="proj-title">
+          {title}
+          <span className="proj-overline"> — Featured Project</span>
+        </span>
+        <span className="proj-expand" aria-label={active ? "Collapse" : "Expand"}>{active ? "▲" : "▼"}</span>
+      </div>
+
+      {active && (
+        <div className="proj-body">
+          <div className="proj-layout">
+            <div className="proj-info">
+              <p className="proj-desc">{desc}</p>
+              <div className="proj-tech">
+                {tech.map(t => (
+                  <span key={t} className="proj-tech-tag">{t}</span>
+                ))}
+              </div>
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 8 }}
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`Visit ${title} website`}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Visit Site
+              </a>
+            </div>
+            <div className="proj-slider-wrap">
+              <ProjectSlider images={images} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .proj-card {
+          background: #c0c0c0;
+          box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+          margin-bottom: 4px;
+          cursor: pointer;
+          font-family: 'Tahoma', 'Arial', sans-serif;
+          font-size: 11px;
+        }
+        .proj-card-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 4px 8px;
+          background: #c0c0c0;
+          user-select: none;
+        }
+        .proj-card.active .proj-card-header {
+          background: #000080;
+          color: #ffffff;
+        }
+        .proj-card.active .proj-card-header * {
+          color: #ffffff;
+        }
+        .proj-title {
+          font-weight: bold;
+          font-size: 11px;
+          flex: 1;
+        }
+        .proj-overline {
+          font-weight: normal;
+          color: #444;
+          font-size: 10px;
+        }
+        .proj-card.active .proj-overline {
+          color: #aac4ff;
+        }
+        .proj-expand {
+          font-size: 9px;
+          color: #444;
+          flex-shrink: 0;
+        }
+        .proj-body {
+          padding: 8px;
+          background: #c0c0c0;
+          border-top: 1px solid #808080;
+          cursor: default;
+        }
+        .proj-layout {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          align-items: flex-start;
+        }
+        .proj-info {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .proj-desc {
+          font-size: 11px;
+          color: #000;
+          line-height: 1.5;
+          background: #ffffff;
+          box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #404040;
+          padding: 6px 8px;
+        }
+        .proj-tech {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .proj-tech-tag {
+          background: #c0c0c0;
+          box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+          padding: 1px 6px;
+          font-size: 10px;
+          font-family: 'Courier New', monospace;
+          color: #000080;
+        }
+        .proj-slider-wrap {
+          background: #000;
+          box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #404040;
+          min-height: 200px;
+          overflow: hidden;
+        }
+        @media (max-width: 600px) {
+          .proj-layout { grid-template-columns: 1fr; }
+        }
+      `}</style>
+    </div>
   );
 }
