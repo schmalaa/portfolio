@@ -9,9 +9,13 @@ const bodyFont = Plus_Jakarta_Sans({ subsets: ["latin"], variable: '--font-body'
 const headingFont = Space_Grotesk({ subsets: ["latin"], weight: ['400', '600', '700'], variable: '--font-heading', display: 'swap' });
 
 export const metadata = {
+  metadataBase: new URL('https://alexschmaltz.com'),
   title: "Alex Schmaltz | Web Developer & Software Engineer Portfolio",
   description: "Portfolio of Alex Schmaltz, a passionate Web Developer and Software Engineer showcasing modern, responsive, and dynamic web applications.",
   keywords: ["Alex Schmaltz", "Web Developer", "Software Engineer", "Frontend Developer", "Full Stack Developer", "Portfolio", "React", "Next.js"],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: "Alex Schmaltz | Web Developer Portfolio",
     description: "Portfolio of Alex Schmaltz, a passionate Web Developer and Software Engineer.",
@@ -19,10 +23,19 @@ export const metadata = {
     siteName: "Alex Schmaltz Portfolio",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Alex Schmaltz Portfolio Preview',
+      },
+    ],
   },
   twitter: {
     title: "Alex Schmaltz | Web Developer Portfolio",
     card: "summary_large_image",
+    creator: "@schmalaa",
   }
 };
 
@@ -46,6 +59,23 @@ export default function RootLayout({ children }) {
           <p>Built with <span style={{ color: '#e25555' }}>&hearts;</span> by Alex</p>
         </footer>
         <Analytics />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Alex Schmaltz',
+              url: 'https://alexschmaltz.com',
+              jobTitle: 'Software Engineer',
+              sameAs: [
+                'https://github.com/schmalaa',
+                'https://www.linkedin.com/in/alex-schmaltz-12127139/',
+                'https://medium.com/@schmalaa'
+              ]
+            })
+          }}
+        />
       </body>
     </html>
   );

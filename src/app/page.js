@@ -30,7 +30,7 @@ export default function Home() {
         <div className="hero-content">
           <RevealWrapper><p className="greeting">Hi, my name is</p></RevealWrapper>
           <RevealWrapper delay="delay-1"><h1 className="hero-title">Alex Schmaltz.</h1></RevealWrapper>
-          <RevealWrapper delay="delay-2"><h1 className="hero-subtitle">I build things.</h1></RevealWrapper>
+          <RevealWrapper delay="delay-2"><h2 className="hero-subtitle">I build things.</h2></RevealWrapper>
           <RevealWrapper delay="delay-3">
             <p className="hero-desc">
               I&apos;m a software engineer and web developer specializing in building (and occasionally designing) exceptional digital experiences. Currently, I&apos;m focused on building accessible, human-centered products.
@@ -158,10 +158,10 @@ export default function Home() {
               </div>
               <div className="project-image glass-panel" style={{ padding: 0 }}>
                 <ProjectSlider images={[
-                  "/leadrevival.jpg",
-                  "/dashboard.jpg",
-                  "/leads-table.jpg",
-                  "/email-composer.jpg"
+                  { src: "/leadrevival.jpg", alt: "LeadRevival main dashboard view" },
+                  { src: "/dashboard.jpg", alt: "LeadRevival analytics overview" },
+                  { src: "/leads-table.jpg", alt: "LeadRevival detailed leads table" },
+                  { src: "/email-composer.jpg", alt: "LeadRevival AI email composer" }
                 ]} />
               </div>
             </article>
@@ -187,8 +187,8 @@ export default function Home() {
               </div>
               <div className="project-image glass-panel" style={{ padding: 0 }}>
                 <ProjectSlider images={[
-                  "/bolt-home.jpg",
-                  "/bolt-button.jpg"
+                  { src: "/bolt-home.jpg", alt: "Bolt Design System homepage" },
+                  { src: "/bolt-button.jpg", alt: "Bolt Design System interactive button component" }
                 ]} />
               </div>
             </article>
@@ -218,8 +218,8 @@ export default function Home() {
               </div>
               <div className="project-image glass-panel" style={{ padding: 0 }}>
                 <ProjectSlider images={[
-                  "/homepage.jpg",
-                  "/agent-answer.jpg"
+                  { src: "/homepage.jpg", alt: "Codebase Architect homepage showing repository visualizer" },
+                  { src: "/agent-answer.jpg", alt: "Codebase Architect AI agent answering query" }
                 ]} />
               </div>
             </article>
@@ -249,9 +249,9 @@ export default function Home() {
               </div>
               <div className="project-image glass-panel" style={{ padding: 0 }}>
                 <ProjectSlider images={[
-                  "/synapse-snake-new-1.png",
-                  "/synapse-snake-new-2.png",
-                  "/gameplay.mp4"
+                  { src: "/synapse-snake-new-1.png", alt: "Synapse Snake gameplay showing enemies" },
+                  { src: "/synapse-snake-new-2.png", alt: "Synapse Snake character selection screen" },
+                  { src: "/gameplay.mp4", alt: "Synapse Snake high-stakes gameplay recording" }
                 ]} />
               </div>
             </article>

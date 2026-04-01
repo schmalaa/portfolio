@@ -35,7 +35,9 @@ export default function ProjectSlider({ images }) {
                     transform: `translateX(-${currentIndex * 100}%)`
                 }}
             >
-                {images.map((imgSrc, index) => {
+                {images.map((imgObj, index) => {
+                    const imgSrc = typeof imgObj === 'string' ? imgObj : imgObj.src;
+                    const imgAlt = typeof imgObj === 'string' ? `Project screenshot ${index + 1}` : imgObj.alt;
                     const isVideo = imgSrc.endsWith('.mp4') || imgSrc.endsWith('.webm');
                     return (
                         <div key={index} style={{ minWidth: '100%', position: 'relative', height: '100%' }}>
@@ -48,11 +50,12 @@ export default function ProjectSlider({ images }) {
                                     muted
                                     loop
                                     playsInline
+                                    aria-label={imgAlt}
                                 />
                             ) : (
                                 <Image
                                     src={imgSrc}
-                                    alt={`Project screenshot ${index + 1}`}
+                                    alt={imgAlt}
                                     fill
                                     style={{ objectFit: 'cover' }}
                                     className="project-img-inner"
