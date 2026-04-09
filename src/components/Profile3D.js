@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import ErrorBoundary from "./ErrorBoundary";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 // Custom shader material for an RGB split/wave hover effect on a single image
 const transitionVertexShader = `
@@ -94,14 +95,20 @@ function ProfileMesh() {
 }
 
 export default function Profile3D() {
+    const isMobile = useIsMobile();
+
     return (
         <div style={{ width: "100%", height: "400px", position: "relative" }}>
-            <ErrorBoundary fallback={<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--clr-bg-elevated)', borderRadius: '16px' }}><p style={{ color: 'var(--clr-text-muted)' }}>Profile Element (WebGL required)</p></div>}>
-                <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
-                    <ambientLight intensity={1} />
-                    <ProfileMesh />
-                </Canvas>
-            </ErrorBoundary>
+            {isMobile ? (
+                 <div style={{ width: '100%', height: '100%', borderRadius: '12px', background: 'url(/profile-2.jpg) center/cover no-repeat', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)' }} />
+            ) : (
+                <ErrorBoundary fallback={<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--clr-bg-elevated)', borderRadius: '16px' }}><p style={{ color: 'var(--clr-text-muted)' }}>Profile Element (WebGL required)</p></div>}>
+                    <Canvas camera={{ position: [0, 0, 4], fov: 60 }} dpr={[1, 1.5]}>
+                        <ambientLight intensity={1} />
+                        <ProfileMesh />
+                    </Canvas>
+                </ErrorBoundary>
+            )}
         </div>
     );
 }

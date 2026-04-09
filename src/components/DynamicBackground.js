@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sparkles, Sphere, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 function AnimatedShapes() {
     const sphereRef1 = useRef();
@@ -73,6 +74,8 @@ function AnimatedShapes() {
 }
 
 export default function DynamicBackground() {
+    const isMobile = useIsMobile();
+
     return (
         <div style={{
             position: 'fixed',
@@ -84,24 +87,26 @@ export default function DynamicBackground() {
             background: 'linear-gradient(to bottom right, #0a0a0f, #13111c)', // Base dark gradient
             pointerEvents: 'none' // Let clicks pass through to the real website
         }}>
-            <Canvas camera={{ position: [0, 0, 10], fov: 75 }} gl={{ alpha: true }}>
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#7c3aed" />
+            {!isMobile && (
+                <Canvas camera={{ position: [0, 0, 10], fov: 75 }} gl={{ alpha: true }} dpr={[1, 1.5]}>
+                    <ambientLight intensity={0.5} />
+                    <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+                    <pointLight position={[-10, -10, -10]} intensity={0.5} color="#7c3aed" />
 
-                {/* Immersive floating particles */}
-                <Sparkles
-                    count={150}
-                    scale={20}
-                    size={2}
-                    speed={0.2}
-                    opacity={0.3}
-                    color="#c4b5fd"
-                />
+                    {/* Immersive floating particles */}
+                    <Sparkles
+                        count={150}
+                        scale={20}
+                        size={2}
+                        speed={0.2}
+                        opacity={0.3}
+                        color="#c4b5fd"
+                    />
 
-                {/* Large distorted color blobs */}
-                <AnimatedShapes />
-            </Canvas>
+                    {/* Large distorted color blobs */}
+                    <AnimatedShapes />
+                </Canvas>
+            )}
         </div>
     );
 }
