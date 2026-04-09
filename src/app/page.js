@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import Hero3DElement from "@/components/Hero3DElement";
-import Profile3D from "@/components/Profile3D";
+import dynamic from "next/dynamic";
 import ProjectSlider from "@/components/ProjectSlider";
-import GitHubMetrics from "@/components/GitHubMetrics";
-import MediumFeed from "@/components/MediumFeed";
+
+const Hero3DElement = dynamic(() => import("@/components/Hero3DElement"), { ssr: false });
+const Profile3D = dynamic(() => import("@/components/Profile3D"), { ssr: false });
+const GitHubMetrics = dynamic(() => import("@/components/GitHubMetrics"), { ssr: false });
+const MediumFeed = dynamic(() => import("@/components/MediumFeed"), { ssr: false });
 
 function RevealWrapper({ children, animation = "reveal-up", delay = "", className = "", style = {} }) {
   const ref = useRef(null);

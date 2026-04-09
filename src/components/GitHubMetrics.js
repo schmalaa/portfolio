@@ -87,7 +87,7 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
 
         const monthsCount = chartData.length || 1;
         const avgPerMonth = Math.round(total / monthsCount);
-        
+
         let bestMonth = { name: "N/A", commits: 0 };
         chartData.forEach(d => {
             if (d.commits > bestMonth.commits) {
@@ -98,7 +98,7 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
         const last30Days = valid.slice(-30).reduce((sum, d) => sum + d.contributionCount, 0);
 
         return {
-            chartData: chartData.slice(-6), // Only show the last 6 months on the graph
+            chartData: chartData.slice(-3), // Only show the last 6 months on the graph
             stats: {
                 total,
                 avgPerMonth,
@@ -136,9 +136,9 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
     return (
         <ErrorBoundary fallback={<div style={{ width: "100%", height: "400px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--clr-text-muted)" }}>Component Error</div>}>
             <div className="metrics-container">
-                
+
                 {/* Header & Main Chart Card */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -159,32 +159,32 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
                             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 10 }}>
                                 <defs>
                                     <linearGradient id="colorCommits" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <XAxis 
-                                    dataKey="name" 
-                                    stroke="#4b5563" 
-                                    fontSize={12} 
-                                    tickLine={false} 
-                                    axisLine={false} 
+                                <XAxis
+                                    dataKey="name"
+                                    stroke="#4b5563"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
                                     dy={10}
                                 />
-                                <YAxis 
-                                    stroke="#4b5563" 
-                                    fontSize={12} 
-                                    tickLine={false} 
+                                <YAxis
+                                    stroke="#4b5563"
+                                    fontSize={12}
+                                    tickLine={false}
                                     axisLine={false}
                                 />
                                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1, strokeDasharray: '4 4' }} />
-                                <Area 
-                                    type="monotone" 
-                                    dataKey="commits" 
-                                    stroke="#10b981" 
+                                <Area
+                                    type="monotone"
+                                    dataKey="commits"
+                                    stroke="#10b981"
                                     strokeWidth={3}
-                                    fillOpacity={1} 
-                                    fill="url(#colorCommits)" 
+                                    fillOpacity={1}
+                                    fill="url(#colorCommits)"
                                     animationDuration={1500}
                                 />
                             </AreaChart>
@@ -194,28 +194,28 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
 
                 {/* Metric Cards Grid */}
                 <div className="metrics-grid">
-                    <MetricCard 
+                    <MetricCard
                         icon={<GitCommit color="#10b981" size={20} />}
                         label="Total Commits"
                         value={stats?.total || 0}
                         subtext="Last 365 days"
                         delay={0.1}
                     />
-                    <MetricCard 
+                    <MetricCard
                         icon={<Flame color="#f97316" size={20} />}
                         label="Last 30 Days"
                         value={stats?.last30Days || 0}
                         subtext="Recent momentum"
                         delay={0.2}
                     />
-                    <MetricCard 
+                    <MetricCard
                         icon={<Trophy color="#eab308" size={20} />}
                         label="Best Month"
                         value={stats?.bestMonthCommits || 0}
                         subtext={stats?.bestMonth || "N/A"}
                         delay={0.3}
                     />
-                    <MetricCard 
+                    <MetricCard
                         icon={<Activity color="#3b82f6" size={20} />}
                         label="Monthly Avg"
                         value={stats?.avgPerMonth || 0}
@@ -355,7 +355,7 @@ export default function GitHubMetrics({ username = "schmalaa" }) {
 
 function MetricCard({ icon, label, value, subtext, delay }) {
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay, duration: 0.5 }}
@@ -369,7 +369,7 @@ function MetricCard({ icon, label, value, subtext, delay }) {
             </div>
             <p className="metric-value">{value}</p>
             <p className="metric-subtext">{subtext}</p>
-            
+
             <div className="metric-hover-glow" />
         </motion.div>
     );
